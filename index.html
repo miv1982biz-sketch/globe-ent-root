@@ -663,28 +663,8 @@
     <p data-ja="製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。" data-en="For product support, please use each product's site. For business inquiries, use the contact form on this site — we reply within two business days.">製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。</p>
   </div>
   <div class="panel form-panel">
-    <form class="form-grid" onsubmit="return false">
-      <div class="field">
-        <label for="cf-name" data-ja="お名前" data-en="Name">お名前</label>
-        <input id="cf-name" type="text" autocomplete="name" data-ja-ph="お名前を入力してください" data-en-ph="Your name" placeholder="お名前を入力してください">
-      </div>
-      <div class="field">
-        <label for="cf-email" data-ja="メールアドレス" data-en="Email address">メールアドレス</label>
-        <input id="cf-email" type="email" autocomplete="email" data-ja-ph="返信先のメールアドレス" data-en-ph="Your email address" placeholder="返信先のメールアドレス">
-      </div>
-      <div class="field">
-        <label for="cf-subject" data-ja="件名" data-en="Subject">件名</label>
-        <input id="cf-subject" type="text" data-ja-ph="件名を入力してください" data-en-ph="Subject" placeholder="件名を入力してください">
-      </div>
-      <div class="field">
-        <label for="cf-body" data-ja="お問い合わせ内容" data-en="Message">お問い合わせ内容</label>
-        <textarea id="cf-body" data-ja-ph="内容を入力してください" data-en-ph="Write your message" placeholder="内容を入力してください"></textarea>
-      </div>
-      <div>
-        <button type="button" class="btn grad" id="cf-send" data-ja="送信する" data-en="Send">送信する</button>
-        <div class="form-note" id="cf-note" data-ja="※ 現在、このフォームからの送信は受け付けていません。製品に関するお問い合わせは、各製品サイトのお問い合わせ窓口からお願いします。" data-en="* This form is not accepting submissions yet. For product inquiries, please use the contact form on each product's site.">※ 現在、このフォームからの送信は受け付けていません。製品に関するお問い合わせは、各製品サイトのお問い合わせ窓口からお願いします。</div>
-      </div>
-    </form>
+    <a class="btn grad" href="https://docs.google.com/forms/d/e/1FAIpQLSc1xJxhkQ8Xl_fJsBONV81Uh9GiieQXmUsYc7TgZfofsYLVBw/viewform" target="_blank" rel="noopener" data-ja="お問い合わせフォームを開く" data-en="Open the contact form">お問い合わせフォームを開く</a>
+    <div class="form-note" data-ja="フォームは Google フォームで開きます。お名前・メールアドレス・件名・お問い合わせ内容を入力してください。" data-en="The form opens in Google Forms. You will be asked for your name, email address, subject, and message.">フォームは Google フォームで開きます。お名前・メールアドレス・件名・お問い合わせ内容を入力してください。</div>
   </div>
 </div></section>
 
@@ -1223,20 +1203,6 @@
       } catch (err) { /* file:// 等では URL 更新をスキップ */ }
     });
   });
-
-  /* ---------- contact form (not connected yet): show the note ---------- */
-  var cfSend = document.getElementById('cf-send');
-  if (cfSend) {
-    cfSend.addEventListener('click', function(){
-      var note = document.getElementById('cf-note');
-      if (note) {
-        note.scrollIntoView({behavior:'smooth', block:'center'});
-        note.style.color = '#c2261f';
-        note.style.fontWeight = '700';
-        setTimeout(function(){ note.style.color = ''; note.style.fontWeight = ''; }, 4000);
-      }
-    });
-  }
 
   /* ---------- init ---------- */
   var initView = params.get('view') || (location.hash || '').replace('#', '') || 'home';

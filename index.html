@@ -1,57 +1,1249 @@
 <!DOCTYPE html>
+<!--
+  globe Entertainment 公式サイト（globe-ent.com）
+  単一ファイル構成：ビュー切替（トップ／製品・メディア／製品詳細12件／更新情報／会社情報／FAQ／お問い合わせ／法務4ページ）、日英切替（data-ja / data-en、併記なし）。
+  製品ビジュアルは各製品サイトの実画像（assets/）を使用。Everyday Abroad のみイメージ図。
+  お問い合わせフォームは送信未接続（フォーム内の注記参照）。受け口の接続は別途判断。
+-->
+
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>globe Entertainment</title>
-<meta name="description" content="globe Entertainment が運営するサービス・メディアの案内板。各サービスへの入口をまとめています。">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="styles.css">
+<meta name="description" content="globe Entertainment の公式サイト。業務用ツール、学びと安全のためのアプリ、暮らしの情報メディアを企画・開発・運営する個人事業です。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="globe Entertainment">
+<meta property="og:title" content="globe Entertainment — 公式サイト">
+<meta property="og:description" content="小さなソフトウェアとメディアを、自分の手で作り、届け続ける事業です。">
+<meta property="og:url" content="https://globe-ent.com/">
+<title data-ja="globe Entertainment — 公式サイト" data-en="globe Entertainment — Official Site">globe Entertainment — 公式サイト</title>
+<style>
+  :root{
+    --ink:#221240;--ink2:#3d3358;--sub:#6f6890;--line:#e7e2f5;
+    --bg:#ffffff;--tint:#f7f5fd;
+    --grad:linear-gradient(92deg,#ff5a1f 0%,#f72c7f 52%,#7b3ff2 100%);
+    --orange:#ff5a1f;--violet:#7b3ff2;
+    --radius:20px;
+    --shadow:0 10px 30px rgba(51,25,120,.08),0 2px 6px rgba(51,25,120,.05);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.8;font-size:15px;-webkit-font-smoothing:antialiased}
+  a{color:var(--violet);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  [hidden]{display:none !important}
+
+  /* header */
+  header{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:10}
+  .bar{display:flex;align-items:center;padding:16px 24px}
+  .logo{font-weight:800;font-size:21px;letter-spacing:.03em;color:var(--ink);cursor:pointer;white-space:nowrap}
+  .logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav.main{display:flex;align-items:center;margin-left:auto}
+  nav.main a{color:var(--ink2);margin-left:26px;font-size:13.5px;font-weight:600;padding-bottom:2px;white-space:nowrap}
+  nav.main a:hover{color:var(--violet);text-decoration:none}
+  nav.main a.active{color:var(--violet);border-bottom:2px solid var(--violet)}
+  .bar-tools{display:flex;align-items:center}
+  .bar-tools a.cta{display:inline-block;margin-left:16px;padding:9px 20px;border-radius:999px;background:var(--grad);color:#fff;font-weight:700;font-size:13.5px;box-shadow:0 6px 16px rgba(247,44,127,.28);white-space:nowrap}
+  .bar-tools a.cta:hover{opacity:.92;color:#fff;text-decoration:none}
+  .bar-tools a.cta.active{color:#fff;box-shadow:0 6px 16px rgba(247,44,127,.28),inset 0 0 0 2px rgba(255,255,255,.65)}
+  .burger{display:none;margin-left:14px;width:42px;height:42px;border:1.5px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex:none}
+  .burger span{display:block;width:20px;height:2px;border-radius:2px;background:var(--ink)}
+  .m-contact{display:none}
+  .lang-toggle{display:inline-flex;margin-left:26px;border:1.5px solid var(--line);border-radius:999px;padding:3px;background:#fff}
+  .lang-toggle button{border:none;background:transparent;padding:5px 14px;border-radius:999px;font-weight:700;font-size:12.5px;color:var(--sub);cursor:pointer;font-family:inherit;line-height:1.4}
+  .lang-toggle button.active{background:var(--grad);color:#fff;box-shadow:0 4px 10px rgba(247,44,127,.25)}
+
+  /* products dropdown */
+  .dd{position:relative}
+  .dd-parent::after{content:"";display:inline-block;margin-left:6px;border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:5.5px solid var(--sub);vertical-align:middle}
+  .dropdown{position:absolute;top:calc(100% + 12px);left:-6px;min-width:264px;max-height:72vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 50px rgba(51,25,120,.16);padding:10px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .18s,transform .18s,visibility .18s;z-index:40}
+  .dd:hover .dropdown,.dd:focus-within .dropdown,.dd.open .dropdown{opacity:1;visibility:visible;transform:none}
+  nav.main .dropdown a{display:block;margin-left:0;padding:8px 12px;border-radius:10px;font-size:13.5px;white-space:normal}
+  nav.main .dropdown a:hover{background:var(--tint);color:var(--violet);text-decoration:none}
+  nav.main .dropdown a.active{border-bottom:none;background:var(--tint);color:var(--violet)}
+  nav.main .dropdown .dd-top{font-weight:800;color:var(--ink)}
+  .dd-cat{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--sub);padding:12px 12px 4px}
+  .dd-cat:first-of-type{padding-top:6px}
+
+  /* product detail views */
+  .backlink{display:inline-block;font-weight:700;font-size:13.5px}
+  .detail-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:start}
+  .detail-body p{font-size:14.5px;color:var(--ink2)}
+  dl.company.mini{grid-template-columns:110px 1fr;margin-top:22px}
+  dl.company.mini dt,dl.company.mini dd{padding:9px 8px;font-size:13.5px}
+  .ext-btn{margin-top:24px}
+  .detaillink{display:inline-block;margin-top:12px;font-weight:700;font-size:13.5px}
+
+  /* product detail: full-width sections */
+  .dsecs{margin-top:46px;display:grid;gap:22px}
+  .dsec{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 32px}
+  .dsec h3{font-size:18px;font-weight:800;margin-bottom:14px}
+  .dsec p{font-size:14.5px;color:var(--ink2)}
+  .dsec.warn{background:var(--tint)}
+  .featlist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 28px}
+  .featlist li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--ink2)}
+  .featlist .checksq{margin-top:6px}
+  .steplist{margin-left:22px;display:grid;gap:8px}
+  .steplist li{font-size:14.5px;color:var(--ink2)}
+
+  /* home: hero collage, feature cards, product cards */
+  .collage{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tile{border:1px solid var(--line);border-radius:14px;background:linear-gradient(160deg,#fbf9ff,#f3efff);padding:16px;min-height:108px;display:flex;flex-direction:column;gap:9px;justify-content:center}
+  .tile .shield{width:52px;height:62px}
+  .tile .play{width:50px;height:50px}
+  .tile .play::after{left:20px;top:15px;border-left-width:14px;border-top-width:9px;border-bottom-width:9px}
+  .tile .chart{height:62px}
+  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .fcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 28px}
+  .fcard h3{font-size:17px;font-weight:800;margin-bottom:8px}
+  .fcard p{font-size:14px;color:var(--ink2)}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column}
+  .pcard h3{font-size:16.5px;font-weight:800;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .pcard p{font-size:13.5px;color:var(--ink2);flex:1}
+  .pcard .detaillink{margin-top:14px}
+  @media (max-width:900px){
+    .fgrid{grid-template-columns:1fr}
+    .featlist{grid-template-columns:1fr}
+    .dsec{padding:24px 22px}
+    .pgrid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .fgrid,.pgrid{grid-template-columns:1fr}
+  }
+
+  /* hero */
+  .hero{padding:76px 0 70px;background:radial-gradient(560px 300px at 88% -40px,rgba(255,90,31,.14),transparent 65%),radial-gradient(640px 340px at 6% -60px,rgba(123,63,242,.12),transparent 65%),var(--bg);overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.24em;padding:7px 14px;border-radius:999px;background:var(--tint);color:var(--violet);border:1px solid var(--line)}
+  .hero h1{font-size:44px;line-height:1.32;font-weight:800;letter-spacing:.01em;margin:26px 0 20px}
+  .hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:15.5px;color:var(--ink2)}
+  .hero-btns{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:13px 28px;border-radius:999px;font-weight:700;font-size:14.5px}
+  .btn.grad{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(247,44,127,.30)}
+  .btn.grad:hover{opacity:.92;text-decoration:none}
+  .btn.ghost{border:1.5px solid var(--line);color:var(--ink);background:#fff}
+  .btn.ghost:hover{border-color:var(--violet);color:var(--violet);text-decoration:none}
+  .visual{position:relative}
+  .visual::before{content:"";position:absolute;right:-30px;bottom:-30px;width:220px;height:220px;border-radius:50%;background:var(--grad);opacity:.16}
+  .panel-visual{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px rgba(51,25,120,.14);padding:22px;position:relative}
+  .pv-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:6px}
+  .pv-head b{font-size:13px;letter-spacing:.1em}
+  .pv-head span{font-size:11px;color:var(--sub)}
+  .pv-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px dashed var(--line)}
+  .pv-row:last-of-type{border-bottom:none}
+  .pv-row .nm{font-weight:700;font-size:14px}
+  .pv-row .ds{font-size:11.5px;color:var(--sub)}
+  .pv-note{font-size:11px;color:var(--sub);margin-top:10px}
+
+  .fv-img{display:block;width:100%;height:240px;object-fit:cover;background:#f3efff}
+  .fv-img.fit{object-fit:contain;background:#13245c}
+
+  /* stats band */
+  .statsband{background:var(--tint);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;padding:44px 0}
+  .stat{padding:0 16px}
+  .stat + .stat{border-left:1px solid var(--line)}
+  .stat b{display:block;font-size:44px;font-weight:800;line-height:1.1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{display:block;margin-top:8px;font-size:13px;color:var(--ink2);font-weight:600;letter-spacing:.05em}
+
+  /* sections */
+  section{padding:72px 0}
+  section.tint{background:var(--tint)}
+  .sechead{max-width:720px;margin-bottom:36px}
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.24em;color:var(--orange);text-transform:uppercase}
+  h2{font-size:30px;font-weight:800;line-height:1.4;margin:10px 0 8px}
+  .secsub{color:var(--sub);font-size:13.5px}
+  .cat{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--ink2);margin:44px 0 8px}
+  .cat:first-of-type{margin-top:0}
+  .badge{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 10px;background:#e9f9ef;color:#177245;border:1px solid #bfe8cf;white-space:nowrap}
+  .badge.dev{background:#f1eefc;color:#6a5aa8;border-color:#ddd3f5}
+
+  /* product feature blocks (visual-led, alternating) */
+  .feat{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;padding:38px 0;border-bottom:1px dashed var(--line)}
+  .feat:last-child{border-bottom:none}
+  .feat.rev .feat-visual{order:2}
+  .feat-body h3{font-size:22px;font-weight:800;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+  .feat-body p{font-size:14.5px;color:var(--ink2);max-width:460px}
+  .feat-body .url{display:inline-block;margin-top:14px;font-size:13.5px;font-weight:700;word-break:break-all}
+  .feat-cap{font-size:11px;color:var(--sub);margin-top:10px}
+  .fv{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .fv-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--tint)}
+  .fv-bar i{width:9px;height:9px;border-radius:50%;background:#ddd3f5;display:block}
+  .fv-url{flex:1;height:14px;border-radius:7px;background:#efeafd;margin-left:8px}
+  .fv-body{padding:24px;min-height:216px;background:linear-gradient(160deg,#fbf9ff,#f3efff);display:flex;flex-direction:column;justify-content:center;gap:12px}
+  .b{height:10px;border-radius:5px;background:#ddd3f5}
+  .b.dark{background:#b7a6ea}
+  .b.grad{background:var(--grad)}
+  .r{display:flex;gap:10px;align-items:center}
+  .blk{border-radius:12px;background:#e9e2fb}
+  .imgblk{border-radius:12px;background:linear-gradient(140deg,#ffd9c2,#f9c6e0 55%,#d9c8fb)}
+  .pillbtn{height:28px;border-radius:999px;background:var(--grad)}
+  .checksq{width:16px;height:16px;border-radius:5px;background:var(--grad);flex:none}
+  .chart{display:flex;align-items:flex-end;gap:12px;height:110px}
+  .chart i{flex:1;border-radius:8px 8px 0 0;background:var(--grad);opacity:.85;display:block}
+  .play{width:76px;height:76px;border-radius:50%;background:var(--grad);position:relative;flex:none}
+  .play::after{content:"";position:absolute;left:30px;top:23px;border-left:21px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent}
+  .shield{width:96px;height:112px;background:var(--grad);clip-path:polygon(50% 0,100% 18%,100% 62%,50% 100%,0 62%,0 18%);opacity:.92;flex:none}
+  .progress{height:10px;border-radius:5px;background:#e4dcf8;overflow:hidden}
+  .progress i{display:block;height:100%;width:62%;background:var(--grad)}
+
+  /* updates */
+  .upgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .upcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+  .upcard time{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;color:#fff;background:var(--grad);border-radius:999px;padding:3px 12px;margin-bottom:12px}
+  .upcard p{font-size:14px;color:var(--ink2)}
+
+  /* company / contact */
+  .panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:34px 38px}
+  dl.company{display:grid;grid-template-columns:190px 1fr}
+  dl.company dt,dl.company dd{padding:13px 10px;border-bottom:1px solid var(--line);font-size:14.5px}
+  dl.company dt{font-weight:700;color:var(--ink2)}
+  dl.company dt:last-of-type,dl.company dd:last-of-type{border-bottom:none}
+  .contact-band{border-radius:24px;padding:40px 42px;background:linear-gradient(120deg,#fff4ec 0%,#fdeef7 48%,#f0eafd 100%);border:1px solid var(--line)}
+  .contact-band p{max-width:760px;color:var(--ink2)}
+
+  /* docs (legal / faq) */
+  .doc h3{font-size:16.5px;font-weight:800;margin:28px 0 6px}
+  .doc h3:first-of-type{margin-top:4px}
+  .doc p,.doc li{font-size:14px;color:var(--ink2)}
+  .doc ul{margin:6px 0 6px 20px}
+  .doc-note{font-size:11.5px;color:var(--sub);background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:26px}
+  .faq-item{padding:22px 0;border-bottom:1px dashed var(--line)}
+  .faq-item:first-of-type{padding-top:4px}
+  .faq-item:last-child{border-bottom:none;padding-bottom:0}
+  .faq-q{font-weight:800;font-size:15.5px;display:flex;gap:10px}
+  .faq-q .qm{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .faq-a{margin-top:8px;font-size:14px;color:var(--ink2);padding-left:27px}
+
+  /* contact form */
+  .form-panel{margin-top:24px}
+  .form-grid{display:grid;gap:18px;max-width:720px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+  .field input,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--violet)}
+  .field textarea{min-height:150px;resize:vertical}
+  .form-note{font-size:11.5px;color:var(--sub);margin-top:14px}
+  button.btn{border:none;cursor:pointer;font-family:inherit}
+
+  /* footer */
+  footer{background:var(--tint);border-top:1px solid var(--line)}
+  .foot{padding-top:34px;padding-bottom:40px;font-size:13px;color:var(--sub)}
+  .foot nav a{margin:0 16px 0 0;color:var(--ink2);font-weight:600;white-space:nowrap}
+  .foot p{margin-top:12px}
+
+  @media (max-width:900px){
+    .hero-grid,.feat,.detail-grid{grid-template-columns:1fr}
+    .feat.rev .feat-visual{order:0}
+    .upgrid{grid-template-columns:repeat(2,1fr)}
+    .hero h1{font-size:36px}
+    dl.company{grid-template-columns:1fr}
+    dl.company dt{border-bottom:none;padding-bottom:0}
+    /* header collapses to logo + language + hamburger; nav becomes a panel */
+    .bar-tools{margin-left:auto}
+    .burger{display:inline-flex}
+    .bar-tools a.cta{display:none}
+    .m-contact{display:block}
+    nav.main{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 24px 40px rgba(51,25,120,.14);padding:8px 24px 16px;z-index:40;margin-left:0}
+    nav.main.open{display:flex}
+    nav.main a{margin-left:0;padding:12px 2px;font-size:15px;border-bottom:1px dashed var(--line)}
+    nav.main a.active{border-bottom:1px dashed var(--line)}
+    .dd{position:static}
+    nav.main .dd > a{margin-left:0}
+    .dropdown{position:static;display:none;opacity:1;visibility:visible;transform:none;box-shadow:none;border:none;border-radius:0;padding:2px 0 8px 16px;max-height:none;overflow:visible}
+    .dd.open .dropdown{display:block}
+    nav.main .dropdown a{border-bottom:none;padding:9px 8px}
+  }
+  @media (max-width:560px){
+    .upgrid,.stats{grid-template-columns:1fr}
+    .stat + .stat{border-left:none;border-top:1px solid var(--line);padding-top:20px;margin-top:20px}
+    .hero{padding:56px 0 44px}
+    .hero h1{font-size:30px}
+    .panel{padding:26px 22px}
+    .contact-band{padding:30px 24px}
+    .bar{padding:12px 16px}
+    .logo{font-size:17px}
+    .lang-toggle{margin-left:10px}
+    .lang-toggle button{padding:5px 9px}
+    .burger{width:38px;height:38px;margin-left:10px}
+    dl.company.mini{grid-template-columns:92px 1fr}
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <p class="wordmark">globe Entertainment</p>
-      <p class="intro">globe Entertainment が運営するサービス・メディアの案内板です。ご用件の入口からお進みください。</p>
-    </header>
-
-    <main>
-      <ul class="directory">
-        <li>
-          <a href="https://batchdocs.globe-ent.com/">
-            <span class="name">Batch Docs</span>
-            <span class="desc">スプレッドシートの行から、Google ドキュメントと PDF を一括生成する Google Workspace アドオン。</span>
-            <span class="host">batchdocs.globe-ent.com</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://ouen.globe-ent.com/">
-            <span class="name">OUEN</span>
-            <span class="desc">応援したい気持ちを、届けよう。（検証中のサービスです）</span>
-            <span class="host">ouen.globe-ent.com</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://travel.globe-ent.com/">
-            <span class="name">旅ステータスラボ</span>
-            <span class="desc">航空・ホテルのステータスとマイルの判断材料をまとめるメディア。</span>
-            <span class="host">travel.globe-ent.com</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://furusato.globe-ent.com/">
-            <span class="name">ふるさと納税手帳</span>
-            <span class="desc">ふるさと納税の返礼品選びと、控除上限額の確認材料をまとめるメディア。</span>
-            <span class="host">furusato.globe-ent.com</span>
-          </a>
-        </li>
-      </ul>
-    </main>
-
-    <footer>
-      <p>お問い合わせは、各サービスの問い合わせフォームからお願いします。</p>
-      <p class="foot-name">globe Entertainment</p>
-    </footer>
+<header><div class="bar">
+  <div class="logo" data-view-link="home">globe <span>Entertainment</span></div>
+  <nav class="main" id="mainnav">
+    <div class="dd" id="products-dd">
+      <a href="#products" class="tablink dd-parent" data-view-link="products" data-ja="製品・メディア" data-en="Products &amp; Media">製品・メディア</a>
+      <div class="dropdown" id="products-menu" role="menu"></div>
+    </div>
+    <a href="#updates" class="tablink" data-view-link="updates" data-ja="更新情報" data-en="Updates">更新情報</a>
+    <a href="#company" class="tablink" data-view-link="company" data-ja="会社情報" data-en="Company">会社情報</a>
+    <a href="#faq" class="tablink" data-view-link="faq" data-ja="よくある質問" data-en="FAQ">よくある質問</a>
+    <a href="#contact" class="tablink m-contact" data-view-link="contact" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a>
+  </nav>
+  <div class="bar-tools">
+    <span class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-set="ja" class="active" aria-pressed="true">JP</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </span>
+    <a class="cta" href="#contact" data-view-link="contact" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a>
+    <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><span></span><span></span><span></span></button>
   </div>
+</div></header>
+
+<div data-view-panel="home">
+  <div class="hero"><div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow" data-ja="公式サイト" data-en="Official Site">公式サイト</span>
+      <h1 data-ja="小さなソフトウェアとメディアを、&lt;br&gt;自分の手で作り、&lt;span class='grad'&gt;届け続ける&lt;/span&gt;事業です。" data-en="We build small software and media by hand, and &lt;span class='grad'&gt;keep delivering&lt;/span&gt; them.">小さなソフトウェアとメディアを、<br>自分の手で作り、<span class="grad">届け続ける</span>事業です。</h1>
+      <p class="lead" data-ja="globe Entertainment は、業務用ツール、学びと安全のためのアプリ、暮らしの情報メディアを企画・開発・運営する個人事業です。外部資本を持たず、2021年の開業以来、すべての製品を自前で運営しています。" data-en="globe Entertainment is an independent studio in Tokyo building and operating small software products and media — designed, built, and run by the operator, since 2021.">globe Entertainment は、業務用ツール、学びと安全のためのアプリ、暮らしの情報メディアを企画・開発・運営する個人事業です。外部資本を持たず、2021年の開業以来、すべての製品を自前で運営しています。</p>
+      <div class="hero-btns">
+        <a class="btn grad" href="#products" data-view-link="products" data-ja="製品・メディアを見る" data-en="View Products &amp; Media">製品・メディアを見る</a>
+        <a class="btn ghost" href="#company" data-view-link="company" data-ja="会社情報" data-en="Company">会社情報</a>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="panel-visual">
+        <div class="collage" aria-hidden="true">
+          <div class="tile">
+            <div class="b grad" style="width:45%"></div>
+            <div class="r"><span class="b dark" style="width:30%"></span><span class="b" style="width:55%"></span></div>
+            <div class="r"><span class="b dark" style="width:30%"></span><span class="b" style="width:48%"></span></div>
+            <div class="pillbtn" style="width:36%"></div>
+          </div>
+          <div class="tile" style="align-items:center">
+            <div class="shield"></div>
+          </div>
+          <div class="tile">
+            <div class="chart"><i style="height:38%"></i><i style="height:58%"></i><i style="height:46%"></i><i style="height:74%"></i><i style="height:92%"></i></div>
+          </div>
+          <div class="tile">
+            <div class="r" style="gap:16px">
+              <div class="play"></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:9px">
+                <div class="b grad" style="width:62%"></div>
+                <div class="b" style="width:88%"></div>
+                <div class="b" style="width:70%"></div>
+              </div>
+            </div>
+            <div class="progress"><i></i></div>
+          </div>
+        </div>
+        <div class="pv-note" data-ja="※ イメージ図です。" data-en="* Illustration.">※ イメージ図です。</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="statsband"><div class="wrap stats">
+    <div class="stat"><b>2021</b><span data-ja="創業" data-en="Founded in Tokyo">創業</span></div>
+    <div class="stat"><b>12</b><span data-ja="製品・メディア" data-en="Products &amp; media">製品・メディア</span></div>
+    <div class="stat"><b>3</b><span data-ja="事業領域" data-en="Software · Media · Publishing">事業領域</span></div>
+  </div></div>
+
+  <section><div class="wrap">
+    <div class="sechead">
+      <div class="kicker" data-ja="考え方" data-en="Philosophy">考え方</div>
+      <h2 data-ja="globe Entertainment の考え方" data-en="The philosophy behind globe Entertainment">globe Entertainment の考え方</h2>
+      <div class="secsub" data-ja="複雑な仕組みの前で、個人が損をしないようにする。それが globe Entertainment の事業の出発点です。" data-en="Individuals should not be the ones who lose out when a system is complicated. That is the starting point of everything globe Entertainment does.">複雑な仕組みの前で、個人が損をしないようにする。それが globe Entertainment の事業の出発点です。</div>
+    </div>
+    <div class="fgrid">
+      <div class="fcard">
+        <h3 data-ja="複雑な仕組みを、個人の側で読み解く" data-en="Untangling complex systems, from the individual's side">複雑な仕組みを、個人の側で読み解く</h3>
+        <p data-ja="税制、料金体系、会員制度、製品の補償。仕組みが複雑なほど、知らない側が損をします。各制度や条件を一次情報で確かめ、損をしない選び方に直して届けるメディアを運営しています（旅ステータスラボ、ふるさと納税手帳、固定費ラボなど）。" data-en="Tax rules, fee structures, membership programs, product warranties — the more complicated the system, the more the side that doesn't know loses out. We check each set of rules and terms against primary sources, and run media that turn them into choices readers can make without losing out (旅ステータスラボ, ふるさと納税手帳, 固定費ラボ, and others).">税制、料金体系、会員制度、製品の補償。仕組みが複雑なほど、知らない側が損をします。各制度や条件を一次情報で確かめ、損をしない選び方に直して届けるメディアを運営しています（旅ステータスラボ、ふるさと納税手帳、固定費ラボなど）。</p>
+      </div>
+      <div class="fcard">
+        <h3 data-ja="面倒な手続きは、仕組みで肩代わりする" data-en="Letting software shoulder the tedious procedures">面倒な手続きは、仕組みで肩代わりする</h3>
+        <p data-ja="定型文書の作成、詐欺の文面の見分け、リコールや補償の確認。繰り返し発生する面倒な作業はソフトウェアに任せ、人がやらなくていい手間を減らす道具を作っています（Batch Docs、Scam Guard、RightsPocket）。" data-en="Drafting routine documents, spotting scam messages, checking recalls and warranty coverage — recurring chores like these belong in software. We build tools that take work people shouldn't have to do by hand off their plates (Batch Docs, Scam Guard, RightsPocket).">定型文書の作成、詐欺の文面の見分け、リコールや補償の確認。繰り返し発生する面倒な作業はソフトウェアに任せ、人がやらなくていい手間を減らす道具を作っています（Batch Docs、Scam Guard、RightsPocket）。</p>
+      </div>
+      <div class="fcard">
+        <h3 data-ja="小さく作って、自分で運営し続ける" data-en="Built small, and kept running by the person who built them">小さく作って、自分で運営し続ける</h3>
+        <p data-ja="2021年の開業以来、すべての製品を運営者自身が企画・開発・運営しています。大きく広げるより、止めずに続けること。作った人が、そのまま運営し続けます。" data-en="Since opening in 2021, every product has been planned, built, and operated by the operator personally. The priority is not to grow big, but to keep going without stopping — the person who built each product is the one who keeps running it.">2021年の開業以来、すべての製品を運営者自身が企画・開発・運営しています。大きく広げるより、止めずに続けること。作った人が、そのまま運営し続けます。</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="tint"><div class="wrap">
+    <div class="sechead">
+      <div class="kicker" data-ja="製品・メディア" data-en="Products &amp; Media">製品・メディア</div>
+      <h2 data-ja="製品・メディア" data-en="Products &amp; Media">製品・メディア</h2>
+      <div class="secsub" data-ja="全12製品を、カテゴリ別に載せています。状態は正直に区別して表示しています（販売中／提供中／開発中）。" data-en="All twelve products, by category. Statuses are labeled honestly (On sale / Live / In development).">全12製品を、カテゴリ別に載せています。状態は正直に区別して表示しています（販売中／提供中／開発中）。</div>
+    </div>
+
+    <div class="cat" data-ja="ソフトウェア" data-en="Software">ソフトウェア</div>
+    <div class="pgrid">
+      <article class="pcard">
+        <h3>Batch Docs <span class="badge" data-ja="販売中" data-en="Live">販売中</span></h3>
+        <p data-ja="Google スプレッドシートの定型文書を一括生成するアドオン。" data-en="An add-on that generates template documents from Google Sheets in bulk.">Google スプレッドシートの定型文書を一括生成するアドオン。</p>
+        <a class="detaillink" href="#product-batchdocs" data-view-link="product-batchdocs" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3><span data-ja="Scam Guard（詐欺ガード）" data-en="Scam Guard">Scam Guard（詐欺ガード）</span> <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+        <p data-ja="詐欺の手口を学び、家族を守るための情報アプリ。" data-en="An information app for learning how scams work and protecting your family.">詐欺の手口を学び、家族を守るための情報アプリ。</p>
+        <a class="detaillink" href="#product-scamguard" data-view-link="product-scamguard" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>RightsPocket <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+        <p data-ja="リコール・製品安全情報を確認するチェッカー。" data-en="A checker for recall and product-safety information.">リコール・製品安全情報を確認するチェッカー。</p>
+        <a class="detaillink" href="#product-rightspocket" data-view-link="product-rightspocket" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>Launchpad <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+        <p data-ja="先回りするCOOの考え方を届けるメディアと診断。" data-en="Media and assessments sharing how a proactive COO thinks.">先回りするCOOの考え方を届けるメディアと診断。</p>
+        <a class="detaillink" href="#product-launchpad" data-view-link="product-launchpad" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>OUEN <span class="badge dev" data-ja="開発中" data-en="In development">開発中</span></h3>
+        <p data-ja="応援したい人へ気持ちとお金を届けるページの仕組み（開発日誌を公開中）。" data-en="A system of pages for sending encouragement and money to people you want to support (development diary now public).">応援したい人へ気持ちとお金を届けるページの仕組み（開発日誌を公開中）。</p>
+        <a class="detaillink" href="#product-ouen" data-view-link="product-ouen" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+    </div>
+
+    <div class="cat" data-ja="メディア" data-en="Media">メディア</div>
+    <div class="pgrid">
+      <article class="pcard">
+        <h3>旅ステータスラボ <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+        <p data-ja="ホテル・航空の上級会員とポイントの実践メディア。" data-en="A practical media on hotel and airline elite status and points.">ホテル・航空の上級会員とポイントの実践メディア。</p>
+        <a class="detaillink" href="#product-tabi" data-view-link="product-tabi" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>ふるさと納税手帳 <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+        <p data-ja="ふるさと納税の選び方と手続きの記録。" data-en="A record of how to choose and file furusato nozei (hometown tax) donations.">ふるさと納税の選び方と手続きの記録。</p>
+        <a class="detaillink" href="#product-furusato" data-view-link="product-furusato" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>固定費ラボ <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+        <p data-ja="毎月の固定費を見直すための比較メディア。" data-en="A comparison media for reviewing monthly fixed costs.">毎月の固定費を見直すための比較メディア。</p>
+        <a class="detaillink" href="#product-koteihi" data-view-link="product-koteihi" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>コスメえらび <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+        <p data-ja="成分と使い方から化粧品を選ぶメディア。" data-en="A media for choosing cosmetics by ingredients and usage.">成分と使い方から化粧品を選ぶメディア。</p>
+        <a class="detaillink" href="#product-cosme" data-view-link="product-cosme" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>Stack Tools Lab <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+        <p data-ja="個人事業と小規模チームのツール選び。" data-en="Tool selection for sole proprietors and small teams.">個人事業と小規模チームのツール選び。</p>
+        <a class="detaillink" href="#product-stack" data-view-link="product-stack" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+    </div>
+
+    <div class="cat" data-ja="パブリッシング" data-en="Publishing">パブリッシング</div>
+    <div class="pgrid">
+      <article class="pcard">
+        <h3>60+ Quiz Club <span class="badge" data-ja="配信中" data-en="Live">配信中</span></h3>
+        <p data-ja="英語圏の60歳以上に向けたクイズ動画チャンネル。" data-en="A quiz video channel for people aged 60+ in English-speaking countries.">英語圏の60歳以上に向けたクイズ動画チャンネル。</p>
+        <a class="detaillink" href="#product-quiz" data-view-link="product-quiz" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+      <article class="pcard">
+        <h3>Everyday Abroad <span class="badge dev" data-ja="準備中" data-en="In preparation">準備中</span></h3>
+        <p data-ja="海外の暮らしと旅の小さなガイド（電子書籍）。" data-en="Small guides to living and traveling abroad (ebooks).">海外の暮らしと旅の小さなガイド（電子書籍）。</p>
+        <a class="detaillink" href="#product-everyday" data-view-link="product-everyday" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+      </article>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="sechead">
+      <div class="kicker" data-ja="更新情報" data-en="Updates">更新情報</div>
+      <h2 data-ja="更新情報" data-en="Updates">更新情報</h2>
+      <div class="secsub" data-ja="事業の動きを、適度な頻度で記録しています。" data-en="We log the business's progress at a moderate pace.">事業の動きを、適度な頻度で記録しています。</div>
+    </div>
+    <div class="upgrid">
+      <div class="upcard"><time>2026-11</time><p data-ja="Batch Docs の販売チャネルに Polar を追加し、販売を開始しました。" data-en="Batch Docs is now also sold through Polar.">Batch Docs の販売チャネルに Polar を追加し、販売を開始しました。</p></div>
+      <div class="upcard"><time>2026-11</time><p data-ja="クイズ動画チャンネル「60+ Quiz Club」を YouTube で開始しました。" data-en="Launched the 60+ Quiz Club channel on YouTube.">クイズ動画チャンネル「60+ Quiz Club」を YouTube で開始しました。</p></div>
+      <div class="upcard"><time>2026-11</time><p data-ja="OUEN の開発日誌の公開と、公式 X アカウントの運用を開始しました。" data-en="Started publishing the OUEN development diary.">OUEN の開発日誌の公開と、公式 X アカウントの運用を開始しました。</p></div>
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="contact-band">
+      <div class="kicker" data-ja="会社情報・お問い合わせ" data-en="Company &amp; Contact">会社情報・お問い合わせ</div>
+      <h2 data-ja="事業について" data-en="About the business">事業について</h2>
+      <p data-ja="審査・提携のご確認には会社情報のページをご覧ください。製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡はお問い合わせフォームからお願いします。" data-en="For verification and partnership review, please see the Company page. For product support, use each product's site; for business inquiries, use the contact form.">審査・提携のご確認には会社情報のページをご覧ください。製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡はお問い合わせフォームからお願いします。</p>
+      <div class="hero-btns">
+        <a class="btn grad" href="#company" data-view-link="company" data-ja="会社情報を見る" data-en="View Company">会社情報を見る</a>
+        <a class="btn ghost" href="#contact" data-view-link="contact" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a>
+      </div>
+    </div>
+  </div></section>
+</div>
+
+<section id="products" data-view-panel="products" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="製品・メディア" data-en="Products &amp; Media">製品・メディア</div>
+    <h2 data-ja="製品・メディア" data-en="Products &amp; Media">製品・メディア</h2>
+    <div class="secsub" data-ja="状態は正直に区別して表示しています（販売中／提供中／開発中）。" data-en="Statuses are labeled honestly (On sale / Live / In development).">状態は正直に区別して表示しています（販売中／提供中／開発中）。</div>
+  </div>
+
+  <div class="cat" data-ja="ソフトウェア" data-en="Software">ソフトウェア</div>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-batchdocs.png" alt="Batch Docs"></div>
+    </div>
+    <div class="feat-body">
+      <h3>Batch Docs <span class="badge" data-ja="販売中" data-en="Live">販売中</span></h3>
+      <p data-ja="Google スプレッドシートの定型文書を一括生成するアドオン。" data-en="An add-on that generates template documents from Google Sheets in bulk.">Google スプレッドシートの定型文書を一括生成するアドオン。</p>
+      <a class="detaillink" href="#product-batchdocs" data-view-link="product-batchdocs" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img fit" src="assets/img-scamguard-icon.png" alt="Scam Guard"></div>
+    </div>
+    <div class="feat-body">
+      <h3><span data-ja="Scam Guard（詐欺ガード）" data-en="Scam Guard">Scam Guard（詐欺ガード）</span> <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+      <p data-ja="詐欺の手口を学び、家族を守るための情報アプリ。" data-en="An information app for learning how scams work and protecting your family.">詐欺の手口を学び、家族を守るための情報アプリ。</p>
+      <a class="detaillink" href="#product-scamguard" data-view-link="product-scamguard" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-rightspocket.png" alt="RightsPocket"></div>
+    </div>
+    <div class="feat-body">
+      <h3>RightsPocket <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+      <p data-ja="リコール・製品安全情報を確認するチェッカー。" data-en="A checker for recall and product-safety information.">リコール・製品安全情報を確認するチェッカー。</p>
+      <a class="detaillink" href="#product-rightspocket" data-view-link="product-rightspocket" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-launchpad.png" alt="Launchpad"></div>
+    </div>
+    <div class="feat-body">
+      <h3>Launchpad <span class="badge" data-ja="提供中" data-en="Live">提供中</span></h3>
+      <p data-ja="先回りするCOOの考え方を届けるメディアと診断。" data-en="Media and assessments sharing how a proactive COO thinks.">先回りするCOOの考え方を届けるメディアと診断。</p>
+      <a class="detaillink" href="#product-launchpad" data-view-link="product-launchpad" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-ouen.jpg" alt="OUEN"></div>
+    </div>
+    <div class="feat-body">
+      <h3>OUEN <span class="badge dev" data-ja="開発中" data-en="In development">開発中</span></h3>
+      <p data-ja="応援したい人へ気持ちとお金を届けるページの仕組み（開発日誌を公開中）。" data-en="A system of pages for sending encouragement and money to people you want to support (development diary now public).">応援したい人へ気持ちとお金を届けるページの仕組み（開発日誌を公開中）。</p>
+      <a class="detaillink" href="#product-ouen" data-view-link="product-ouen" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <div class="cat" data-ja="メディア" data-en="Media">メディア</div>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-tabi.jpg" alt="旅ステータスラボ"></div>
+    </div>
+    <div class="feat-body">
+      <h3>旅ステータスラボ <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+      <p data-ja="ホテル・航空の上級会員とポイントの実践メディア。" data-en="A practical media on hotel and airline elite status and points.">ホテル・航空の上級会員とポイントの実践メディア。</p>
+      <a class="detaillink" href="#product-tabi" data-view-link="product-tabi" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-furusato.jpg" alt="ふるさと納税手帳"></div>
+    </div>
+    <div class="feat-body">
+      <h3>ふるさと納税手帳 <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+      <p data-ja="ふるさと納税の選び方と手続きの記録。" data-en="A record of how to choose and file furusato nozei (hometown tax) donations.">ふるさと納税の選び方と手続きの記録。</p>
+      <a class="detaillink" href="#product-furusato" data-view-link="product-furusato" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-koteihi.png" alt="固定費ラボ"></div>
+    </div>
+    <div class="feat-body">
+      <h3>固定費ラボ <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+      <p data-ja="毎月の固定費を見直すための比較メディア。" data-en="A comparison media for reviewing monthly fixed costs.">毎月の固定費を見直すための比較メディア。</p>
+      <a class="detaillink" href="#product-koteihi" data-view-link="product-koteihi" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-cosme.png" alt="コスメえらび"></div>
+    </div>
+    <div class="feat-body">
+      <h3>コスメえらび <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+      <p data-ja="成分と使い方から化粧品を選ぶメディア。" data-en="A media for choosing cosmetics by ingredients and usage.">成分と使い方から化粧品を選ぶメディア。</p>
+      <a class="detaillink" href="#product-cosme" data-view-link="product-cosme" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img" src="assets/img-stack.png" alt="Stack Tools Lab"></div>
+    </div>
+    <div class="feat-body">
+      <h3>Stack Tools Lab <span class="badge" data-ja="運営中" data-en="Live">運営中</span></h3>
+      <p data-ja="個人事業と小規模チームのツール選び。" data-en="Tool selection for sole proprietors and small teams.">個人事業と小規模チームのツール選び。</p>
+      <a class="detaillink" href="#product-stack" data-view-link="product-stack" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <div class="cat" data-ja="パブリッシング" data-en="Publishing">パブリッシング</div>
+
+  <article class="feat">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><img class="fv-img fit" src="assets/img-quiz.jpg" alt="60+ Quiz Club"></div>
+    </div>
+    <div class="feat-body">
+      <h3>60+ Quiz Club <span class="badge" data-ja="配信中" data-en="Live">配信中</span></h3>
+      <p data-ja="英語圏の60歳以上に向けたクイズ動画チャンネル。" data-en="A quiz video channel for people aged 60+ in English-speaking countries.">英語圏の60歳以上に向けたクイズ動画チャンネル。</p>
+      <a class="detaillink" href="#product-quiz" data-view-link="product-quiz" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+
+  <article class="feat rev">
+    <div class="feat-visual">
+      <div class="fv"><div class="fv-bar"><i></i><i></i><i></i><span class="fv-url"></span></div><div class="fv-body">
+        <div class="r" style="align-items:stretch;gap:8px">
+          <div class="blk" style="flex:1;min-height:140px;border-radius:12px 4px 4px 12px"></div>
+          <div class="blk" style="flex:1;min-height:140px;border-radius:4px 12px 12px 4px"></div>
+        </div>
+        <div class="b grad" style="width:38%"></div>
+      </div></div>
+      <div class="feat-cap" data-ja="イメージ図です。" data-en="Illustration.">イメージ図です。</div>
+    </div>
+    <div class="feat-body">
+      <h3>Everyday Abroad <span class="badge dev" data-ja="準備中" data-en="In preparation">準備中</span></h3>
+      <p data-ja="海外の暮らしと旅の小さなガイド（電子書籍）。" data-en="Small guides to living and traveling abroad (ebooks).">海外の暮らしと旅の小さなガイド（電子書籍）。</p>
+      <a class="detaillink" href="#product-everyday" data-view-link="product-everyday" data-ja="詳しく見る →" data-en="View details →">詳しく見る →</a>
+    </div>
+  </article>
+</div></section>
+
+<section id="updates" class="tint" data-view-panel="updates" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="更新情報" data-en="Updates">更新情報</div>
+    <h2 data-ja="更新情報" data-en="Updates">更新情報</h2>
+    <div class="secsub" data-ja="事業の動きを、適度な頻度で記録しています。" data-en="We log the business's progress at a moderate pace.">事業の動きを、適度な頻度で記録しています。</div>
+  </div>
+  <div class="upgrid">
+    <div class="upcard"><time>2026-11</time><p data-ja="Batch Docs の販売チャネルに Polar を追加し、販売を開始しました。" data-en="Batch Docs is now also sold through Polar.">Batch Docs の販売チャネルに Polar を追加し、販売を開始しました。</p></div>
+    <div class="upcard"><time>2026-11</time><p data-ja="クイズ動画チャンネル「60+ Quiz Club」を YouTube で開始しました。" data-en="Launched the 60+ Quiz Club channel on YouTube.">クイズ動画チャンネル「60+ Quiz Club」を YouTube で開始しました。</p></div>
+    <div class="upcard"><time>2026-11</time><p data-ja="OUEN の開発日誌の公開と、公式 X アカウントの運用を開始しました。" data-en="Started publishing the OUEN development diary.">OUEN の開発日誌の公開と、公式 X アカウントの運用を開始しました。</p></div>
+  </div>
+</div></section>
+
+<section id="company" data-view-panel="company" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="会社情報" data-en="Company">会社情報</div>
+    <h2 data-ja="会社情報" data-en="Company">会社情報</h2>
+    <div class="secsub" data-ja="審査・提携のご確認用に、事業の実在情報をまとめています。" data-en="Business details, provided for verification and partnership review.">審査・提携のご確認用に、事業の実在情報をまとめています。</div>
+  </div>
+  <div class="panel">
+    <dl class="company">
+      <dt data-ja="屋号" data-en="Trade name">屋号</dt><dd>globe Entertainment</dd>
+      <dt data-ja="事業形態" data-en="Form">事業形態</dt><dd data-ja="個人事業主（日本）" data-en="Sole proprietor, Japan">個人事業主（日本）</dd>
+      <dt data-ja="創業" data-en="Founded">創業</dt><dd data-ja="2021年" data-en="2021">2021年</dd>
+      <dt data-ja="所在地" data-en="Location">所在地</dt><dd data-ja="東京都（詳細住所はご請求に応じて開示します）" data-en="Tokyo, Japan (full address disclosed on request)">東京都（詳細住所はご請求に応じて開示します）</dd>
+      <dt data-ja="事業内容" data-en="Business">事業内容</dt><dd data-ja="ソフトウェア製品の開発・販売、デジタルメディアの運営、電子書籍の出版" data-en="Software products, digital media, and publishing">ソフトウェア製品の開発・販売、デジタルメディアの運営、電子書籍の出版</dd>
+      <dt data-ja="運営方針" data-en="Note">運営方針</dt><dd data-ja="外部資本を持たず、2021年以来すべての製品を自前で継続運営しています。" data-en="Independent and bootstrapped since 2021.">外部資本を持たず、2021年以来すべての製品を自前で継続運営しています。</dd>
+    </dl>
+  </div>
+</div></section>
+
+<section id="contact" data-view-panel="contact" hidden><div class="wrap">
+  <div class="contact-band">
+    <div class="kicker" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</div>
+    <h2 data-ja="お問い合わせ" data-en="Contact">お問い合わせ</h2>
+    <p data-ja="製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。" data-en="For product support, please use each product's site. For business inquiries, use the contact form on this site — we reply within two business days.">製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。</p>
+  </div>
+  <div class="panel form-panel">
+    <form class="form-grid" onsubmit="return false">
+      <div class="field">
+        <label for="cf-name" data-ja="お名前" data-en="Name">お名前</label>
+        <input id="cf-name" type="text" autocomplete="name" data-ja-ph="お名前を入力してください" data-en-ph="Your name" placeholder="お名前を入力してください">
+      </div>
+      <div class="field">
+        <label for="cf-email" data-ja="メールアドレス" data-en="Email address">メールアドレス</label>
+        <input id="cf-email" type="email" autocomplete="email" data-ja-ph="返信先のメールアドレス" data-en-ph="Your email address" placeholder="返信先のメールアドレス">
+      </div>
+      <div class="field">
+        <label for="cf-subject" data-ja="件名" data-en="Subject">件名</label>
+        <input id="cf-subject" type="text" data-ja-ph="件名を入力してください" data-en-ph="Subject" placeholder="件名を入力してください">
+      </div>
+      <div class="field">
+        <label for="cf-body" data-ja="お問い合わせ内容" data-en="Message">お問い合わせ内容</label>
+        <textarea id="cf-body" data-ja-ph="内容を入力してください" data-en-ph="Write your message" placeholder="内容を入力してください"></textarea>
+      </div>
+      <div>
+        <button type="button" class="btn grad" id="cf-send" data-ja="送信する" data-en="Send">送信する</button>
+        <div class="form-note" id="cf-note" data-ja="※ 現在、このフォームからの送信は受け付けていません。製品に関するお問い合わせは、各製品サイトのお問い合わせ窓口からお願いします。" data-en="* This form is not accepting submissions yet. For product inquiries, please use the contact form on each product's site.">※ 現在、このフォームからの送信は受け付けていません。製品に関するお問い合わせは、各製品サイトのお問い合わせ窓口からお願いします。</div>
+      </div>
+    </form>
+  </div>
+</div></section>
+
+<section id="faq" data-view-panel="faq" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="よくある質問" data-en="FAQ">よくある質問</div>
+    <h2 data-ja="よくある質問" data-en="Frequently Asked Questions">よくある質問</h2>
+    <div class="secsub" data-ja="審査・提携のご確認でよくいただく質問をまとめています。" data-en="Questions we are often asked during verification and partnership reviews.">審査・提携のご確認でよくいただく質問をまとめています。</div>
+  </div>
+  <div class="panel doc">
+    <div class="faq-item">
+      <div class="faq-q"><span class="qm">Q.</span><span data-ja="事業形態を教えてください" data-en="What kind of business is this?">事業形態を教えてください</span></div>
+      <p class="faq-a" data-ja="globe Entertainment は、2021年に開業した日本の個人事業です。所在地は東京都で、事業の実在情報は会社情報のページにまとめています。" data-en="globe Entertainment is a sole proprietorship established in Japan in 2021, based in Tokyo. Business details are listed on the Company page.">globe Entertainment は、2021年に開業した日本の個人事業です。所在地は東京都で、事業の実在情報は会社情報のページにまとめています。</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="qm">Q.</span><span data-ja="製品はどこで購入できますか" data-en="How can I purchase your products?">製品はどこで購入できますか</span></div>
+      <p class="faq-a" data-ja="製品ごとに販売方法が異なります。各製品サイトの案内から購入でき、リンクは製品・メディアのページにまとめています。" data-en="Each product is sold through its own site. Links are listed on the Products &amp; Media page; please follow the guidance on each product's site.">製品ごとに販売方法が異なります。各製品サイトの案内から購入でき、リンクは製品・メディアのページにまとめています。</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="qm">Q.</span><span data-ja="サポートへの連絡方法を教えてください" data-en="How do I contact support?">サポートへの連絡方法を教えてください</span></div>
+      <p class="faq-a" data-ja="製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。" data-en="For product support, please use each product's site. For business inquiries, use the contact form on this site — we reply within two business days.">製品ごとのお問い合わせは各製品サイトから、事業全体に関するご連絡は本サイトのお問い合わせフォームからお願いします。原則として2営業日以内に返信します。</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="qm">Q.</span><span data-ja="請求や返金はどうなりますか" data-en="How do billing and refunds work?">請求や返金はどうなりますか</span></div>
+      <p class="faq-a" data-ja="お支払いは各製品の販売チャネルを通じて行われます。返金については、返金方針のページをご確認ください。" data-en="Payments are processed through each product's sales channel. For refunds, please see the Refund Policy page.">お支払いは各製品の販売チャネルを通じて行われます。返金については、返金方針のページをご確認ください。</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="qm">Q.</span><span data-ja="運営者について教えてください" data-en="Who runs this business?">運営者について教えてください</span></div>
+      <p class="faq-a" data-ja="外部資本を持たず、運営者自身がすべての製品を企画・開発・運営しています。2021年の開業以来、自前で継続運営しています。" data-en="The business is independent and bootstrapped: the operator plans, builds, and runs every product, and has done so since 2021.">外部資本を持たず、運営者自身がすべての製品を企画・開発・運営しています。2021年の開業以来、自前で継続運営しています。</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="scta" data-view-panel="scta" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="特定商取引法に基づく表記" data-en="Specified Commercial Transactions Act">特定商取引法に基づく表記</div>
+    <h2 data-ja="特定商取引法に基づく表記" data-en="Specified Commercial Transactions Act">特定商取引法に基づく表記</h2>
+    <div class="secsub" data-ja="通信販売に関する法定表記です。" data-en="Statutory disclosure for online sales under Japanese law.">通信販売に関する法定表記です。</div>
+  </div>
+  <div class="panel">
+    <dl class="company">
+      <dt data-ja="販売事業者" data-en="Seller">販売事業者</dt><dd>globe Entertainment</dd>
+      <dt data-ja="所在地" data-en="Address">所在地</dt><dd data-ja="東京都（詳細住所はご請求に応じて開示します）" data-en="Tokyo, Japan (full address disclosed on request)">東京都（詳細住所はご請求に応じて開示します）</dd>
+      <dt data-ja="電話番号" data-en="Phone">電話番号</dt><dd data-ja="ご請求に応じて開示します（お問い合わせはフォームをご利用ください）" data-en="Disclosed on request (please use the contact form for inquiries)">ご請求に応じて開示します（お問い合わせはフォームをご利用ください）</dd>
+      <dt data-ja="連絡先" data-en="Contact">連絡先</dt><dd data-ja="本サイトのお問い合わせフォーム" data-en="The contact form on this site">本サイトのお問い合わせフォーム</dd>
+      <dt data-ja="販売価格" data-en="Prices">販売価格</dt><dd data-ja="各製品ページに表示する価格" data-en="As shown on each product page">各製品ページに表示する価格</dd>
+      <dt data-ja="商品代金以外の必要料金" data-en="Additional fees">商品代金以外の必要料金</dt><dd data-ja="発生する場合は各製品ページに記載します" data-en="Stated on each product page where applicable">発生する場合は各製品ページに記載します</dd>
+      <dt data-ja="お支払い方法" data-en="Payment methods">お支払い方法</dt><dd data-ja="各製品の販売チャネルが対応する方法とし、各製品ページに記載します" data-en="Methods supported by each product's sales channel, as stated on each product page">各製品の販売チャネルが対応する方法とし、各製品ページに記載します</dd>
+      <dt data-ja="お支払い時期" data-en="Payment timing">お支払い時期</dt><dd data-ja="各製品ページに記載します" data-en="As stated on each product page">各製品ページに記載します</dd>
+      <dt data-ja="商品の引渡し時期" data-en="Delivery">商品の引渡し時期</dt><dd data-ja="デジタル製品のため、決済完了後に各製品の方法で提供します（詳細は各製品ページに記載）" data-en="Products are digital: provided by each product's method after payment is completed (details on each product page)">デジタル製品のため、決済完了後に各製品の方法で提供します（詳細は各製品ページに記載）</dd>
+      <dt data-ja="返品・キャンセル" data-en="Returns &amp; cancellations">返品・キャンセル</dt><dd data-ja="返金方針のページに定めます" data-en="As set out on the Refund Policy page">返金方針のページに定めます</dd>
+    </dl>
+  </div>
+</div></section>
+
+<section id="privacy" data-view-panel="privacy" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="プライバシーポリシー" data-en="Privacy Policy">プライバシーポリシー</div>
+    <h2 data-ja="プライバシーポリシー" data-en="Privacy Policy">プライバシーポリシー</h2>
+    <div class="secsub" data-ja="個人情報の取り扱いについて定めます。" data-en="How we handle personal information.">個人情報の取り扱いについて定めます。</div>
+  </div>
+  <div class="panel doc">
+    <h3 data-ja="取得する情報" data-en="Information we collect">取得する情報</h3>
+    <p data-ja="お問い合わせフォームでご入力いただく情報（お名前、メールアドレス、お問い合わせ内容）、および製品・サービスの提供に伴って取得する情報です。" data-en="Information you enter in the contact form (name, email address, and message), and information obtained in the course of providing our products and services.">お問い合わせフォームでご入力いただく情報（お名前、メールアドレス、お問い合わせ内容）、および製品・サービスの提供に伴って取得する情報です。</p>
+    <h3 data-ja="利用目的" data-en="Purposes of use">利用目的</h3>
+    <p data-ja="取得した情報は、お問い合わせへの対応、製品・サービスの提供・維持・改善、不正利用の防止のために利用します。" data-en="We use the information we collect to respond to inquiries; to provide, maintain, and improve our products and services; and to prevent misuse.">取得した情報は、お問い合わせへの対応、製品・サービスの提供・維持・改善、不正利用の防止のために利用します。</p>
+    <h3 data-ja="第三者への提供" data-en="Sharing with third parties">第三者への提供</h3>
+    <p data-ja="法令に基づく場合を除き、ご本人の同意なく個人情報を第三者に提供しません。" data-en="We do not provide personal information to third parties without your consent, except as required by law.">法令に基づく場合を除き、ご本人の同意なく個人情報を第三者に提供しません。</p>
+    <h3 data-ja="取り扱いの委託" data-en="Outsourcing">取り扱いの委託</h3>
+    <p data-ja="利用目的の達成に必要な範囲で、個人情報の取り扱いを外部に委託する場合があります。その場合は委託先を適切に監督します。" data-en="We may outsource the handling of personal information within the scope necessary to achieve the purposes above, and will supervise such contractors appropriately.">利用目的の達成に必要な範囲で、個人情報の取り扱いを外部に委託する場合があります。その場合は委託先を適切に監督します。</p>
+    <h3 data-ja="Cookie の利用" data-en="Cookies">Cookie の利用</h3>
+    <p data-ja="本サイトでは、利便性の向上や利用状況の把握のために Cookie を使用する場合があります。ブラウザの設定により Cookie を無効化できます。" data-en="This site may use cookies to improve usability and understand usage. You can disable cookies in your browser settings.">本サイトでは、利便性の向上や利用状況の把握のために Cookie を使用する場合があります。ブラウザの設定により Cookie を無効化できます。</p>
+    <h3 data-ja="開示・訂正・削除" data-en="Access, correction, and deletion">開示・訂正・削除</h3>
+    <p data-ja="ご本人からの請求に応じて、保有する個人情報の開示・訂正・削除に対応します。お問い合わせフォームからご連絡ください。" data-en="On request from the individual, we will disclose, correct, or delete the personal information we hold. Please contact us via the contact form.">ご本人からの請求に応じて、保有する個人情報の開示・訂正・削除に対応します。お問い合わせフォームからご連絡ください。</p>
+    <h3 data-ja="改定" data-en="Changes">改定</h3>
+    <p data-ja="本ポリシーを改定する場合は、本ページでお知らせします。" data-en="Any changes to this policy will be announced on this page.">本ポリシーを改定する場合は、本ページでお知らせします。</p>
+    <h3 data-ja="お問い合わせ窓口" data-en="Contact">お問い合わせ窓口</h3>
+    <p data-ja="個人情報の取り扱いに関するお問い合わせは、本サイトのお問い合わせフォームからご連絡ください。" data-en="For inquiries about the handling of personal information, please use the contact form on this site.">個人情報の取り扱いに関するお問い合わせは、本サイトのお問い合わせフォームからご連絡ください。</p>
+  </div>
+</div></section>
+
+<section id="terms" data-view-panel="terms" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="利用規約" data-en="Terms of Service">利用規約</div>
+    <h2 data-ja="利用規約" data-en="Terms of Service">利用規約</h2>
+    <div class="secsub" data-ja="製品・サービスおよび本サイトの利用条件を定めます。" data-en="Terms for using our products, services, and this site.">製品・サービスおよび本サイトの利用条件を定めます。</div>
+  </div>
+  <div class="panel doc">
+    <h3 data-ja="適用" data-en="Scope">適用</h3>
+    <p data-ja="本規約は、globe Entertainment が提供する製品・サービスおよび本サイトの利用に適用されます。" data-en="These terms apply to the use of the products, services, and website provided by globe Entertainment.">本規約は、globe Entertainment が提供する製品・サービスおよび本サイトの利用に適用されます。</p>
+    <h3 data-ja="禁止事項" data-en="Prohibited conduct">禁止事項</h3>
+    <p data-ja="利用にあたって、次の行為を禁止します。" data-en="The following conduct is prohibited when using our products and services:">利用にあたって、次の行為を禁止します。</p>
+    <ul>
+      <li data-ja="法令または公序良俗に違反する行為" data-en="Conduct that violates laws or public order and morals">法令または公序良俗に違反する行為</li>
+      <li data-ja="他者の権利を侵害する行為" data-en="Conduct that infringes the rights of others">他者の権利を侵害する行為</li>
+      <li data-ja="製品・サービスの運営を妨害する行為" data-en="Conduct that interferes with the operation of our products and services">製品・サービスの運営を妨害する行為</li>
+      <li data-ja="不正アクセス、その他これらに準ずる行為" data-en="Unauthorized access, or conduct equivalent to the above">不正アクセス、その他これらに準ずる行為</li>
+    </ul>
+    <h3 data-ja="知的財産権" data-en="Intellectual property">知的財産権</h3>
+    <p data-ja="製品・サービスおよび本サイトのコンテンツに関する権利は、当事業者または正当な権利者に帰属します。" data-en="Rights in the content of our products, services, and this site belong to us or to the respective rights holders.">製品・サービスおよび本サイトのコンテンツに関する権利は、当事業者または正当な権利者に帰属します。</p>
+    <h3 data-ja="免責" data-en="Disclaimer">免責</h3>
+    <p data-ja="当事業者は、製品・サービスの完全性・正確性・有用性について保証しません。" data-en="We make no warranties regarding the completeness, accuracy, or usefulness of our products and services.">当事業者は、製品・サービスの完全性・正確性・有用性について保証しません。</p>
+    <h3 data-ja="規約の変更" data-en="Changes to these terms">規約の変更</h3>
+    <p data-ja="本規約を変更する場合は、本ページでお知らせします。" data-en="Any changes to these terms will be announced on this page.">本規約を変更する場合は、本ページでお知らせします。</p>
+    <h3 data-ja="準拠法" data-en="Governing law">準拠法</h3>
+    <p data-ja="本規約は日本法に準拠します。" data-en="These terms are governed by the laws of Japan.">本規約は日本法に準拠します。</p>
+  </div>
+</div></section>
+
+<section id="refunds" data-view-panel="refunds" hidden><div class="wrap">
+  <div class="sechead">
+    <div class="kicker" data-ja="返金方針" data-en="Refund Policy">返金方針</div>
+    <h2 data-ja="返金方針" data-en="Refund Policy">返金方針</h2>
+    <div class="secsub" data-ja="返金の考え方と申請方法をまとめています。" data-en="Our approach to refunds and how to request one.">返金の考え方と申請方法をまとめています。</div>
+  </div>
+  <div class="panel doc">
+    <h3 data-ja="基本方針" data-en="Basic policy">基本方針</h3>
+    <p data-ja="デジタル製品の性質上、返金の可否と条件は製品ごとに定めます（各製品ページに記載します）。" data-en="Due to the nature of digital products, refund eligibility and conditions are set per product (stated on each product page).">デジタル製品の性質上、返金の可否と条件は製品ごとに定めます（各製品ページに記載します）。</p>
+    <h3 data-ja="申請方法" data-en="How to request">申請方法</h3>
+    <p data-ja="お問い合わせフォームから、対象の製品名と購入時の情報を添えてご連絡ください。" data-en="Please contact us via the contact form, including the product name and your purchase details.">お問い合わせフォームから、対象の製品名と購入時の情報を添えてご連絡ください。</p>
+    <h3 data-ja="返金方法" data-en="Refund method">返金方法</h3>
+    <p data-ja="返金が認められる場合は、原則として購入時と同じ決済方法で返金します（販売チャネルの仕様に準じます）。" data-en="Where a refund is approved, it is issued to the original payment method in principle (subject to the sales channel's procedures).">返金が認められる場合は、原則として購入時と同じ決済方法で返金します（販売チャネルの仕様に準じます）。</p>
+  </div>
+</div></section>
+
+<footer><div class="wrap foot">
+  <nav>
+    <a href="#company" data-view-link="company" data-ja="会社情報" data-en="Company">会社情報</a>
+    <a href="#contact" data-view-link="contact" data-ja="お問い合わせ" data-en="Contact">お問い合わせ</a>
+    <a href="#terms" data-view-link="terms" data-ja="利用規約" data-en="Terms">利用規約</a>
+    <a href="#privacy" data-view-link="privacy" data-ja="プライバシー" data-en="Privacy">プライバシー</a>
+    <a href="#refunds" data-view-link="refunds" data-ja="返金方針" data-en="Refunds">返金方針</a>
+    <a href="#scta" data-view-link="scta" data-ja="特定商取引法に基づく表記" data-en="Specified Commercial Transactions Act">特定商取引法に基づく表記</a>
+  </nav>
+  <p>© globe Entertainment — Tokyo, Japan. Since 2021.</p>
+</div></footer>
+
+<script>
+(function(){
+  var params = new URLSearchParams(location.search);
+
+  /* ---------- product data (dropdown + detail views are generated from this) ---------- */
+  var CATS = {
+    software:   {ja:"ソフトウェア", en:"Software"},
+    media:      {ja:"メディア", en:"Media"},
+    publishing: {ja:"パブリッシング", en:"Publishing"}
+  };
+  var NOURL_NOTE = {
+    ja:"製品サイトのURLは未確定です。このページが公式の紹介ページとなります。",
+    en:"The product site URL is not yet fixed; this page serves as the official introduction."
+  };
+  var PRODUCTS = [
+    {slug:"batchdocs", cat:"software", dev:false,
+     name:{ja:"Batch Docs", en:"Batch Docs"}, badge:{ja:"販売中", en:"Live"},
+     lead:{ja:"Google スプレッドシートの行データを、Google ドキュメントのテンプレートに差し込んで、定型文書を一括生成する Google Workspace アドオンです。請求書・証明書・契約書・通知・報告書など、手作業で1件ずつ作っていた文書をまとめて作れます。テンプレートは一度作れば、翌月からは保存した設定でそのまま再実行できます。", en:"A Google Workspace add-on that merges rows from Google Sheets into a Google Docs template and generates finished documents in bulk — invoices, certificates, contracts, notices, and reports. Build the template once, and next month's run is a single click from the saved setup."},
+     more:{ja:"開発・運営は globe Entertainment が行っています。あなたの Google アカウントの中で動作し、文書データが開発者のサーバーに送られることはありません。料金や導入方法の最新情報は、製品サイトにも掲載しています。", en:"Developed and operated by globe Entertainment. It runs inside your Google account, and your document data is never sent to a developer server. Current pricing and setup details are also published on the product site."},
+     feats:[
+       {ja:"テンプレート内の {{tag}} を自動検出し、シートの列と対応づける（対応は手動で調整もできる）", en:"Detects every {{tag}} in the template automatically and matches tags to your sheet's columns (any match can be adjusted by hand)"},
+       {ja:"出力は Google ドキュメントまたは PDF。保存先の Drive フォルダと、列から組み立てるファイル名パターン（例：Invoice_{{Client}}_{{No}}）を指定できる", en:"Output as Google Doc or PDF, to a Drive folder you choose, with a file-name pattern built from your own columns (e.g. Invoice_{{Client}}_{{No}})"},
+       {ja:"生成結果はシートに書き戻される：状態・ファイルへのリンク・生成時刻が各行に記録され、何を・いつ・どこに作ったかが残る", en:"Results are written back into your sheet — status, a link to the file, and the timestamp for every row, so you keep a complete record of what was generated, when, and where"},
+       {ja:"レシピ（生成設定）をスプレッドシート内に保存でき、翌月の実行はワンクリック。再設定や再確認はいらない", en:"Save a generation setup as a recipe inside your spreadsheet; the next run is one click, with no re-mapping and no re-checking"},
+       {ja:"AI の推測を使わない決定的な生成：同じテンプレートと同じデータからは、常に同じ文書ができる", en:"Deterministic by design — no AI guesswork: the same template and the same data always produce the same document"},
+       {ja:"プライバシー設計：スプレッドシート・テンプレート・生成文書が Google アカウントの外に出ることはない（有料プランのライセンス確認で送るのは、ライセンストークンとアカウント識別子のみ）", en:"Private by design: your spreadsheets, templates, and generated documents never leave your Google account (the license check for paid plans sends only a license token and an account identifier — never content)"}
+     ],
+     steps:[
+       {ja:"Google ドキュメントでテンプレートを作り、差し込みたい場所に {{tag}} を置く", en:"Write your document once as a Google Docs template, using {{tag}} placeholders"},
+       {ja:"アドオンでテンプレートとシートを指定し、タグと列の対応を確認する", en:"Point Batch Docs at the template; it detects the tags and matches them to your sheet's columns"},
+       {ja:"出力形式（ドキュメント／PDF）と保存先フォルダ、ファイル名パターンを選ぶ", en:"Choose the output: Google Doc or PDF, a Drive folder, and a file-name pattern"},
+       {ja:"実行すると全行分の文書が生成されて Drive に保存され、結果がシートに記録される", en:"Run — every document is generated, saved to Drive, and recorded back in your sheet"}
+     ],
+     who:{ja:"毎月、請求書・証明書・通知などを件数分、手作業で作っている方。Google スプレッドシートとドキュメントで業務文書を管理している個人事業・小規模チームの方。", en:"Anyone who makes invoices, certificates, or notices one by one every month, and sole proprietors or small teams who manage business documents in Google Sheets and Docs."},
+     warn:{ja:"料金：無料プランは月25文書まで生成でき、全機能が使えます（上限に達すると翌月まで生成が止まります）。Pro は月額 US$9／年額 US$69 で生成無制限です。Team（US$49／ワークスペース／月）は準備中で、まだ提供していません。生成済みの文書と保存したレシピは、プランにかかわらずあなたの Google アカウントに残ります。", en:"Pricing: the Free plan generates 25 documents per month with the full feature set (generation pauses at the limit until the next month). Pro is US$9 per user/month or US$69/year with unlimited generation. Team (US$49 per workspace/month) is planned and not yet available. Documents you have generated and recipes you have saved stay in your Google account, whatever plan you are on."},
+     url:"https://batchdocs.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"scamguard", cat:"software", dev:false,
+     name:{ja:"Scam Guard（詐欺ガード）", en:"Scam Guard"}, badge:{ja:"提供中", en:"Live"},
+     lead:{ja:"詐欺や悪質な勧誘との「接触の瞬間」に、落ち着いて見分けられるようになるための情報を届けるサービスです。怖がらせるためではなく、止まれるように。手口の解説サイトと、YouTube チャンネル（日次の Shorts と週次の長尺動画）で、新しい手口と見分け方を発信しています。", en:"A service that delivers information for the moment of contact with a scam or malicious solicitation — so you can stop and judge calmly, not so you will be frightened. It publishes new scam tactics and how to spot them through an explainer site and a YouTube channel (daily Shorts and a weekly long-form video)."},
+     more:{ja:"開発・運営は globe Entertainment が行っています。サイトでは、あやしいと感じたときにまず何をするかも含めて、手口と止め方を整理しています。", en:"Developed and operated by globe Entertainment. The site organises scam tactics and how to stop them, including what to do first when something feels suspicious."},
+     feats:[
+       {ja:"新手口の解説：実際に確認された手口を題材に、流れと見分けポイントをサイトと動画で整理する", en:"Explainers on new tactics: real, confirmed scams broken down into their flow and the points where you can spot them, on the site and in videos"},
+       {ja:"YouTube で日次の Shorts と週次の長尺動画を配信し、手口と対策を短時間で確認できる", en:"Daily Shorts and a weekly long-form video on YouTube, so tactics and countermeasures can be checked in minutes"},
+       {ja:"疑わしい文面を貼って確認できる無料チェッカー（文面の内容から判定する）", en:"A free checker: paste a suspicious message and have its wording assessed"},
+       {ja:"公式の相談窓口への案内：警察相談専用電話 #9110／消費者ホットライン 188（どちらも公的な窓口で、無料）", en:"Guidance to official helplines: the police consultation line #9110 and the consumer hotline 188 (both official and free)"}
+     ],
+     steps:[
+       {ja:"あやしいと感じたら、まず止まる（相手の言う連絡先には連絡しない）", en:"If something feels suspicious, stop first — do not contact the address or number the other side gives you"},
+       {ja:"サイトで手口を確認する。文面が手元にあれば、チェッカーで文面を確認する", en:"Check the tactic on the site; if you have the message, run its wording through the checker"},
+       {ja:"判断に迷ったら、警察相談専用電話 #9110 や消費者ホットライン 188 に相談する", en:"If you are still unsure, consult the official lines: #9110 (police consultation) or 188 (consumer hotline)"}
+     ],
+     who:{ja:"自分や家族（とくに高齢の家族）を詐欺から守りたい方。あやしい電話・SMS・勧誘を受けたときに、落ち着いて確認する材料がほしい方。", en:"People who want to protect themselves and their family — especially older family members — from scams, and anyone who wants a calm way to check when a suspicious call, text, or pitch arrives."},
+     warn:{ja:"Scam Guard は情報提供のサービスです。個別の被害の相談や解決は扱えないため、公式の相談窓口（#9110／188）をご案内しています。チェッカーが判定するのは文面の内容で、電話番号そのものからは判定しません。", en:"Scam Guard provides information; it cannot handle individual cases or resolve losses, so it points you to the official helplines (#9110 / 188). The checker assesses the wording of a message — it does not judge a phone number on its own."},
+     url:"https://scamguard.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"rightspocket", cat:"software", dev:false,
+     name:{ja:"RightsPocket", en:"RightsPocket"}, badge:{ja:"提供中", en:"Live"},
+     lead:{ja:"米国で買った製品がリコールの対象になっていないかを、米国の公式データベースで確認できる無料チェッカーです。検索はあなたのブラウザから CPSC（米国消費者製品安全委員会）の公式データベースへ直接送られ、このサイトに検索した内容は残りません。", en:"A free checker that tells you whether a product you own is under a U.S. recall, using the official database. Your search goes directly from your browser to the official CPSC database — this page has no server and keeps no record of what you search."},
+     more:{ja:"開発・運営は globe Entertainment が行っています。チェックは常に無料で、安全に関する情報を有料の壁の内側に置くことはしません。", en:"Developed and operated by globe Entertainment. Checking is always free, and safety information is never paywalled."},
+     feats:[
+       {ja:"CPSC の公式リコールデータベース（saferproducts.gov）を検索し、所有している製品が対象かどうかを確認できる", en:"Searches the official CPSC recall database (saferproducts.gov) to check whether a product you own is recalled"},
+       {ja:"検索はブラウザから公式データベースへ直接送信され、サーバーを持たないため、検索内容が記録されない", en:"Your search goes directly from your browser to the official database; with no server in between, nothing about your search is stored"},
+       {ja:"チェックは常に無料。リコールの申請自体も、メーカーや CPSC へ無料で行える（このサービスを通す必要はない）", en:"Checking is always free — and filing a claim with the manufacturer or the CPSC is free too; you never need this service to claim a remedy"},
+       {ja:"安全に関する情報は有料化しない方針を、製品サイトで明示している", en:"The product site states the policy up front: safety information is never paywalled"}
+     ],
+     steps:[
+       {ja:"製品名を入力して検索する", en:"Enter a product name and search"},
+       {ja:"結果を確認し、対象だった場合は公式の案内に沿ってメーカー等へ申請する", en:"Check the result; if the product is recalled, follow the official guidance to claim with the manufacturer"}
+     ],
+     who:{ja:"米国で製品を購入した方。買った製品のリコール情報を、公式のデータで自分で確かめたい方。", en:"People who have bought products in the United States, and anyone who wants to verify a product's recall status against the official data themselves."},
+     warn:{ja:"対象は米国の CPSC リコールです。所有品全体のリコール・保証期限・カード特典を見守り、申請書類づくりを担う RightsPocket Pro は開発中で、製品サイトで先行案内の登録を受け付けています。", en:"Coverage is U.S. CPSC recalls. RightsPocket Pro — which keeps watch over everything you own (recalls, warranty expirations, and card purchase protection) and prepares claim paperwork — is being built; you can join the early list on the product site."},
+     url:"https://rightspocket.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"launchpad", cat:"software", dev:false,
+     name:{ja:"Launchpad", en:"Launchpad"}, badge:{ja:"提供中", en:"Live"},
+     lead:{ja:"「考える前に始められる」事業づくりを支えるサービスとして、開発を進めているプロジェクトです。作る過程で考えたこと・分かったことは、開発日誌で正直に記録しています。事業の候補は、AI の思いつきではなく、実際に売上が立っている事業の仕組みの「型」から作ります。", en:"A project being built to help people start a small business they can actually begin. What we think and learn while building it is recorded honestly in a public development diary. Business candidates are made from the patterns of real businesses that already earn revenue — not from AI guesswork."},
+     more:{ja:"globe Entertainment が開発・運営しています。現在はプロトタイプで検証中で、一般公開はしていません。開発日誌は製品サイトで公開しています。", en:"Developed and operated by globe Entertainment. It is currently being verified as a prototype and is not open to the public; the development diary is published on the product site."},
+     feats:[
+       {ja:"開発日誌の公開：作る過程で考えたことと分かったことを、正直に記録していく", en:"A public development diary that records what we think and learn while building, honestly"},
+       {ja:"事業候補は「実在の事業の型」から：M&A 仲介サイトに公開されている事業の情報を読み、「何を・誰に・どう集めて・どう稼ぐか」の仕組みの型を集めて候補を作る（個別の事業の情報そのものは出さない）", en:"Candidates from real business patterns: we read businesses listed on M&A brokerage sites and collect their patterns — what is sold, to whom, how customers are gathered, how money is made — to build candidates with a basis (the businesses' own information is not republished)"},
+       {ja:"始める前の状態で支援を分ける設計：土台がある人には実行の伴走を、ゼロからの人には「見られる場所を作る」ところからの伴走を", en:"Support split by starting point: for people who already have a base, help with execution; for people starting from zero, help starting from building a place to be seen"},
+       {ja:"正直な前提の明示：ゼロからの人の最初の売上は数週間単位の話で、短期で売れるような言い方はしない", en:"Honest premises stated up front: a first sale from zero takes weeks, and we do not describe it as something that sells quickly"}
+     ],
+     steps:null,
+     who:{ja:"これから小さな事業を始めたい方。フォロワーや販路といった土台がない状態から始める方。", en:"People who want to start a small business — especially those starting with no audience and no sales channel yet."},
+     warn:{ja:"現在はプロトタイプで検証中で、一般公開はしていません。公開の時期や料金は、検証の数字を見てから正直にお知らせします。まずは開発日誌をご覧ください。", en:"The service is currently a prototype under verification and is not open to the public. Launch timing and pricing will be announced honestly once we have seen the verification numbers. For now, please read the development diary."},
+     url:"https://launchpad.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"ouen", cat:"software", dev:true,
+     name:{ja:"OUEN", en:"OUEN"}, badge:{ja:"開発中", en:"In development"},
+     lead:{ja:"応援したい人へ、気持ちとお金を届けるためのページの仕組みを開発中のプロジェクトです。開発の過程は開発日誌で公開しています。現在は検証用の仮サイトを公開し、架空のお店や人だけを使って仕組みを確かめています。", en:"A project in development: a system of pages for sending encouragement and money to people you want to support. The development process is shared in a public diary. A verification site is currently public, using only fictional shops and people to test how the system works."},
+     more:{ja:"globe Entertainment が開発しています。正式な提供開始はまだで、時期や仕様は開発の進み具合を見て確定します。", en:"Developed by globe Entertainment. The service has not launched yet; timing and specifications will be fixed as development progresses."},
+     feats:[
+       {ja:"応援を届けるページの仕組みを設計・開発中", en:"Designing and building a page system for delivering support"},
+       {ja:"開発日誌で、設計の判断や検証の進み具合を公開している", en:"A development diary that shares design decisions and verification progress"},
+       {ja:"仮サイトで検証中：登場するお店や人はすべて架空で、実際のお金は扱わない", en:"Verification on a demo site: all shops and people shown are fictional, and no real money is handled"}
+     ],
+     steps:null,
+     who:{ja:"応援したい人やお店がある方に向けた仕組みです（開発中）。", en:"For people who have someone — or a shop — they want to support (in development)."},
+     warn:{ja:"現在開発中です。仮サイトは検証用で、実際のお金は動きません。提供開始の時期や仕様などの詳細は未定です。", en:"Currently in development. The demo site is for verification only and no real money moves. Launch timing and specifications are yet to be determined."},
+     url:"https://ouen.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"},
+     note:{ja:"リンク先は検証用の仮サイトです。登場するお店や人はすべて架空で、実際のお金は扱いません。", en:"The link leads to a verification (demo) site. All shops and people shown there are fictional, and no real money is handled."}},
+    {slug:"tabi", cat:"media", dev:false,
+     name:{ja:"旅ステータスラボ", en:"旅ステータスラボ"}, badge:{ja:"運営中", en:"Live"},
+     lead:{ja:"航空会社とホテルのステータス制度について、「なんとなくお得そう」ではなく数字で損得を確かめる実践メディアです。制度変更は公式情報で確認し、取得・維持にかかる実費と特典の価値を、記事と計算ツールで比べます。", en:"A practical media for checking the real value of airline and hotel status programs in numbers, not by gut feeling. Rule changes are verified against official sources, and the actual cost of earning and keeping status is compared with the value of the benefits, in articles and calculators."},
+     more:{ja:"globe Entertainment が運営する実践メディアです。このサイトで扱うのは、制度変更の確認・費用の試算・期限前の判断材料の3つだけに絞っています。", en:"A practical media operated by globe Entertainment. The site deliberately covers only three things: verifying rule changes, estimating costs, and providing material for decisions before deadlines."},
+     feats:[
+       {ja:"制度変更の確認：ルール変更や条件改定の直後に、公式情報で「何がどう変わったか」を確認する記事", en:"Rule-change checks: right after a rule or condition changes, articles verify what changed against official sources"},
+       {ja:"計算ツール2つ：必要マイルと現金価格から1マイルあたりの価値を出す「マイル価値の計算ツール」と、目標ステータスまでの不足FOP・必要便数・月あたりのペース・FOP単価が出る「FLY ON ポイント到達コスト試算ツール」", en:"Two calculators: a mile-value calculator (enter the miles needed and the cash price to get the value per mile) and a FLY ON points cost estimator (missing FOP, flights needed, monthly pace, and cost per FOP toward your target status)"},
+       {ja:"期限前の判断材料：年度末やキャンペーン期限の前に、「あとどれだけ使えば届くか／届いても割に合うか」を判断する材料を出す", en:"Decision material before deadlines: before fiscal year-ends and campaign deadlines, articles lay out how much more you need — and whether reaching it is worth it"},
+       {ja:"制度変更アラート（無料）：JAL・ANA のステータス制度、カードの条件、ふるさと納税のルールに変更があったとき、メールでお知らせする", en:"Rule-change alerts (free): an email when JAL/ANA status rules, card conditions, or furusato nozei rules change"}
+     ],
+     steps:[
+       {ja:"気になる制度の記事で、公式の条件と変更点を確認する", en:"Read the article for the program you care about and check the official conditions and what changed"},
+       {ja:"計算ツールに数字を入れて、取得・維持の損得を試算する", en:"Enter your numbers in a calculator and estimate whether earning or keeping status pays off"},
+       {ja:"制度変更アラート（無料）に登録して、ルール変更を取りこぼさない", en:"Register for the free rule-change alerts so you do not miss a change"}
+     ],
+     who:{ja:"JAL・ANA などの上級会員を目指している方、すでにステータスを持ち維持の損得を判断したい方。マイルやポイントの価値を数字で確かめたい方。", en:"People aiming for elite status with JAL, ANA, or hotel programs; current status holders deciding whether keeping it pays off; and anyone who wants to check the value of miles and points in numbers."},
+     warn:{ja:"制度の数値は各社の公式の制度条件と、本サイトの計算例によります（例：1マイルの価値は計算例の範囲で0.83〜4.00円）。広告を含む記事には「PR」と明記しています。", en:"Program figures follow each company's official conditions and this site's worked examples (for instance, the value of one mile ranges from 0.83 to 4.00 yen across the examples). Articles containing advertising are marked PR."},
+     url:"https://travel.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"furusato", cat:"media", dev:false,
+     name:{ja:"ふるさと納税手帳", en:"ふるさと納税手帳"}, badge:{ja:"運営中", en:"Live"},
+     lead:{ja:"ふるさと納税の返礼品の選び方、控除上限額の目安、制度の変更点、手続きの期限を、一次情報で確認して整理するメディアです。感覚ではなく、計算式と前提から判断できる材料を置きます。", en:"A media that organises how to choose furusato nozei gifts, estimate your deduction ceiling, follow rule changes, and keep the deadlines — all verified against primary sources. It provides material you can judge from formulas and stated assumptions, not from gut feeling."},
+     more:{ja:"globe Entertainment が運営するメディアです。このサイトで扱うのは、制度変更の確認・控除上限額の目安・期限の管理の3つだけに絞っています。", en:"Operated by globe Entertainment. The site deliberately covers only three things: verifying rule changes, estimating the deduction ceiling, and managing the deadlines."},
+     feats:[
+       {ja:"制度変更の確認：総務省の基準や手続きの変更を、公式情報で確認する記事", en:"Rule-change checks: articles verify changes to Ministry of Internal Affairs standards and procedures against official sources"},
+       {ja:"控除上限額の目安：年収帯と家族構成から、計算式と前提つきで上限額の目安を出す。早見表と「控除上限額の目安シミュレーター」（年収帯と家族構成を選ぶ簡易版、前提と対象外の要素を明示）がある", en:"Deduction-ceiling estimates: from your income band and household composition, with the formula and assumptions shown — via a quick-reference table and a simulator (a simple version where you select an income band and household type, with its assumptions and exclusions stated)"},
+       {ja:"期限の管理：年末の寄附期限、ワンストップ特例の申請期限（翌年1月10日必着）など、外すと控除を失う期限を整理する", en:"Deadline management: the year-end donation deadline and the One-Stop Special System application deadline (must arrive by January 10 of the following year) — the dates that cost you the deduction if missed"},
+       {ja:"制度変更アラート（無料）：ふるさと納税のルールや控除上限の計算方法に変更があったとき、メールでお知らせする", en:"Rule-change alerts (free): an email when furusato nozei rules or the ceiling calculation method changes"}
+     ],
+     steps:[
+       {ja:"早見表やシミュレーターで、自分の控除上限額の目安を確認する", en:"Check your estimated deduction ceiling in the table or the simulator"},
+       {ja:"上限の範囲内で、寄附先と返礼品を選ぶ", en:"Choose municipalities and gifts within that ceiling"},
+       {ja:"ワンストップ特例を使う場合は、申請書を翌年1月10日必着で送る（確定申告をすると特例は使えない）", en:"If you use the One-Stop Special System, send the application so it arrives by January 10 of the following year (filing a tax return makes the system unavailable)"}
+     ],
+     who:{ja:"ふるさと納税をこれから始める方。上限額を超えずに寄附したい方。期限の管理を間違えたくない方。", en:"People starting furusato nozei, people who want to donate without exceeding their ceiling, and people who do not want to get the deadlines wrong."},
+     warn:{ja:"上限額の目安は、総務省の早見表と整合を確認した簡易計算による概算です（例：年収500万円・独身で約61,000円、年収700万円・独身で約108,000円）。このサイトは税務の個別相談を行うものではありません。広告を含む記事には「PR」と明記しています。", en:"Ceiling figures are estimates from a simplified calculation checked against the ministry's quick-reference table (e.g. about 61,000 yen for a single person earning 5 million yen, about 108,000 yen at 7 million yen). This site does not provide individual tax advice. Articles containing advertising are marked PR."},
+     url:"https://furusato.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"koteihi", cat:"media", dev:false,
+     name:{ja:"固定費ラボ", en:"固定費ラボ"}, badge:{ja:"運営中", en:"Live"},
+     lead:{ja:"毎月の固定費を、「月額表示」ではなく契約期間の総額＝実質月額で確かめる比較メディアです。光回線を中心に、各社の公式条件を確認し、工事費やキャッシュバック、解約金まで含めた総額で比べます。", en:"A comparison media that checks monthly fixed costs by the total over the contract term — the effective monthly cost — rather than by the headline monthly price. Centred on fibre internet, it verifies each provider's official terms and compares totals including installation fees, cashback, and cancellation charges."},
+     more:{ja:"globe Entertainment が運営する比較メディアです。記事は「費用の試算」「回線の条件比較」「解約・更新の確認」のカテゴリで整理しています。", en:"A comparison media operated by globe Entertainment. Articles are organised into cost estimates, connection comparisons, and cancellation/renewal checks."},
+     feats:[
+       {ja:"実質月額での比較：月額・工事費・キャッシュバック・解約金から総額と実質月額を出し、月額表示だけでは順位が逆転することを実数で確かめる", en:"Effective-monthly comparisons: totals and effective monthly costs are computed from the monthly fee, installation fee, cashback, and cancellation charge — showing with real figures how rankings flip versus the headline price"},
+       {ja:"実質月額シミュレーター：月額・工事費・キャッシュバック・解約金を入れて総額と実質月額を計算できる（DTI光とGMOとくとくBB光のプリセット付き）", en:"An effective-monthly simulator: enter the monthly fee, installation fee, cashback, and cancellation charge to compute the total and effective monthly cost (with presets for DTI Hikari and GMO Tokutoku BB Hikari)"},
+       {ja:"条件の比較記事：光回線とモバイルWi-Fiの置き換えが成り立つ条件、レンタルSIM／レンタルWiFiの総額比較、住まいと使う期間で総額がどう変わるか", en:"Condition comparisons: when mobile Wi-Fi can replace a fibre line, rental SIM / rental Wi-Fi totals, and how the total changes with your home and the period you will use it"},
+       {ja:"解約・更新の確認：解約金・工事費の残債・解約月の請求という「解約で払う3種類のお金」について、どこで確認するかを整理する", en:"Cancellation and renewal checks: where to verify the three kinds of money you pay when cancelling — the cancellation fee, the remaining installation balance, and the final month's billing"}
+     ],
+     steps:[
+       {ja:"候補について、月額・工事費・キャッシュバック・解約金を公式条件で集める", en:"Collect each candidate's monthly fee, installation fee, cashback, and cancellation charge from the official terms"},
+       {ja:"シミュレーターで総額と実質月額を出して比べる", en:"Run the simulator to compare totals and effective monthly costs"},
+       {ja:"更新月と解約金を確認してから、申し込む／乗り換える", en:"Check the renewal month and cancellation charges before you apply or switch"}
+     ],
+     who:{ja:"光回線の契約や乗り換えを検討している方。毎月の固定費を見直したい方。", en:"People considering a new fibre contract or a switch, and anyone reviewing their monthly fixed costs."},
+     warn:{ja:"比較の数字は各社の公式条件をもとにした試算で、適用条件（新規契約・利用期間など）によって変わります。例：DTI光 ファミリー（新規・24か月）の実質月額は約5,198円、GMOとくとくBB光 ファミリー（新規・24か月）は約5,894円（サイト掲載の試算）。", en:"Comparison figures are estimates based on each provider's official terms and change with the conditions (new contract, term length, and so on). Examples from the site: DTI Hikari Family (new, 24 months) works out to about 5,198 yen per month effectively; GMO Tokutoku BB Hikari Family (new, 24 months) to about 5,894 yen."},
+     url:"https://koteihi.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"cosme", cat:"media", dev:false,
+     name:{ja:"コスメえらび", en:"コスメえらび"}, badge:{ja:"運営中", en:"Live"},
+     lead:{ja:"化粧品を「公表データ」で比べて選ぶためのメディアです。メーカー公表の価格・容量・スペックを横並びにし、1mLあたり単価や定期購入の総額といった計算を重ねて、表示価格だけでは分からない違いを整理します。使ってみた感想ではなく、公式情報で検証できる数字だけを扱います。", en:"A media for choosing cosmetics by published data. It lines up manufacturer-published prices, volumes, and specs, and layers in calculations such as the price per millilitre and the total cost of a subscription, to surface differences the sticker price hides. It deals only in figures verifiable from official sources — not in impressions from use."},
+     more:{ja:"globe Entertainment が運営するメディアです（サイト名は「コスメ選びラボ」）。このサイトで扱うのは、商品を比べること・単価の計算・定期購入の総額表示の3つです。", en:"Operated by globe Entertainment (the site's name is Cosme Erabi Lab). It covers three things: comparing products, calculating unit prices, and showing subscription totals."},
+     feats:[
+       {ja:"商品を比べる：メーカー公表のスペック・価格・容量を横並びにし、販売サイトのレビュー件数などの統計と単価を添えて、用途に合わせた選び方を整理する", en:"Product comparisons: manufacturer-published specs, prices, and volumes side by side, with statistics such as review counts and unit prices, organised by use"},
+       {ja:"単価の計算：税込価格 ÷ 内容量で1mL（または1g）あたりの単価を出し、本体・詰め替え・大容量・セット品を同じ物差しに乗せる", en:"Unit-price calculation: tax-inclusive price divided by volume gives the price per millilitre (or gram), putting full bottles, refills, large sizes, and sets on the same scale"},
+       {ja:"定期購入の総額表示：初回価格ではなく、最低継続回数までの総支払額と解約条件で比べる（一次情報源は各販売元の特定商取引法の表記）", en:"Subscription totals: compared not by the first-order price but by the total paid up to the minimum term and the cancellation conditions (primary source: each seller's statutory commercial-transactions disclosure)"},
+       {ja:"書かないことの明示：運営者が使っていない商品の使用感や効果は書かない。効能に触れる場合も、厚生労働省が化粧品で表示できると定めた効能の範囲の中だけに限る", en:"Stated limits: we do not write about the feel or effects of products the operator has not used, and any mention of efficacy stays within the scope the Ministry of Health, Labour and Welfare permits for cosmetics"}
+     ],
+     steps:[
+       {ja:"候補の価格と容量を、メーカー公式の表示で確認する", en:"Check each candidate's price and volume on the manufacturer's official listing"},
+       {ja:"1mLあたり単価を出して、本体・詰め替え・大容量を同じ土俵で比べる", en:"Work out the price per millilitre and compare full bottles, refills, and large sizes on the same basis"},
+       {ja:"定期購入は、初回価格ではなく最低継続回数までの総額と解約条件で比べる", en:"For subscriptions, compare the total up to the minimum term and the cancellation conditions — not the first-order price"}
+     ],
+     who:{ja:"化粧品の価格の違いを、容量や総額まで含めて確かめてから買いたい方。定期購入を検討している方。", en:"People who want to verify what a cosmetic really costs — volume and totals included — before buying, and people considering a subscription purchase."},
+     warn:{ja:"価格・容量はメーカー公式の表示をもとにした計算例です（例：無印良品 敏感肌用化粧水 しっとり 本体 300mL／790円の1mL単価は約2.63円、2026年11月9日確認）。価格は変わることがあります。広告を含む記事には「PR」と明記しています。", en:"Prices and volumes are worked examples based on manufacturers' official listings (e.g. MUJI's Sensitive Skin Toning Water (Moisture type), 300 mL at 790 yen, works out to about 2.63 yen per mL; checked November 9, 2026). Prices can change. Articles containing advertising are marked PR."},
+     url:"https://cosme-erabi.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"stack", cat:"media", dev:false,
+     name:{ja:"Stack Tools Lab", en:"Stack Tools Lab"}, badge:{ja:"運営中", en:"Live"},
+     lead:{ja:"SaaS ツールの料金と条件を、各社の公式ページで確認して比べるメディアです。見出しの価格が全体の価格とは限らないため、数字の定義をそろえて横並びにし、それぞれの数字に確認日を付けます。まずはメール・ニュースレターのツールから扱っています。", en:"A media that checks SaaS pricing and terms against the vendors' official pages. Because the headline price is not the whole price, figures are lined up under shared definitions, each marked with the date it was checked. It starts with email and newsletter tools."},
+     more:{ja:"globe Entertainment が運営するメディアです。ツール選びで失敗しやすいのは、無料プランの本当の上限・制限の裏にある定義・売り始めたときに初めて出てくる手数料の3点で、このサイトはその3点を扱います。", en:"Operated by globe Entertainment. Choosing a tool usually fails at three points — the free plan's real ceiling, the definition hidden inside a limit, and the fee that appears only when you start selling — and this site works on those three."},
+     feats:[
+       {ja:"公表スペックの比較：料金、読者数の上限、送信制限、プランの条件を、各社の料金ページとヘルプから読み、共通の定義で横並びにする", en:"Compare published specs: prices, audience ceilings, sending limits, and plan gates, read from the vendors' own pricing and help pages and placed side by side under shared definitions"},
+       {ja:"数え方のルールの確認：「購読者」や「連絡先」を各社がどう数えるか、段階料金が跳ぶ条件、上限を超えたときに何が起きるかを、超える前に読む", en:"Read the counting rules: what a subscriber or a contact means at each vendor, when a tier price jumps, and what happens when you cross a limit — before you cross it"},
+       {ja:"見出しの先のコスト：有料ニュースレターや製品販売の手数料、年払いと月払いの差、最初の有料ステップの価格まで追い、1年目の実コストを出す", en:"Follow the cost past the headline: transaction fees on paid newsletters and products, annual-vs-monthly billing differences, and the price of the first paid step — the figures that decide what a tool actually costs in year one"},
+       {ja:"確認できない数字は載せない：公式ページで確認できない数字は推測で埋めずに省き、載せる数字には確認日を明記する", en:"Unconfirmed figures are left out: where a figure could not be confirmed on an official page, it is omitted rather than estimated, and published figures carry their check date"}
+     ],
+     steps:[
+       {ja:"候補ツールの公式料金ページで、無料プランの上限と「数え方」を確認する", en:"On each candidate's official pricing page, check the free-plan ceiling and the counting rule"},
+       {ja:"記事の比較で、最初の有料ステップと販売手数料まで含めた1年目のコストを比べる", en:"Use the comparison articles to weigh the first-year cost, including the first paid step and selling fees"},
+       {ja:"上限を超えたときの扱いを確認してから導入する", en:"Confirm what happens when you cross a limit, then adopt the tool"}
+     ],
+     who:{ja:"ニュースレターやメール配信のツールを選んでいる個人事業・小規模チームの方。SaaS の料金体系を、条件まで読んでから決めたい方。", en:"Sole proprietors and small teams choosing a newsletter or email tool, and anyone who wants to read a SaaS pricing structure down to its conditions before deciding."},
+     warn:{ja:"記事は公表された条件の確認であり、使っていないツールを使ったように書くことはしません。数字は確認日時点の公式表示によります（例：無料プランの上限は Kit 10,000 subscribers／beehiiv 2,500／Systeme.io 2,000 contacts、2026年11月9日確認。各社で数え方が違うため、そのままでは順位になりません）。アフィリエイトリンクを含む記事はその旨を明記しています。", en:"Articles are checks of published terms; we do not describe tools we have not used as if we had. Figures follow the official pages as of their check date (e.g. free-plan ceilings of 10,000 subscribers for Kit, 2,500 for beehiiv, and 2,000 contacts for Systeme.io, checked November 9, 2026 — the three numbers are not directly comparable until you read what each vendor counts). Articles containing affiliate links are marked."},
+     url:"https://stacktools.globe-ent.com/", urlLabel:{ja:"製品サイトへ", en:"Visit the product site"}},
+    {slug:"quiz", cat:"publishing", dev:false,
+     name:{ja:"60+ Quiz Club", en:"60+ Quiz Club"}, badge:{ja:"配信中", en:"Live"},
+     lead:{ja:"英語圏の60歳以上に向けたクイズ動画チャンネルです。YouTube で配信し、国別のシリーズを順次公開しています。あわせて Instagram の Reels でも配信を始めました。", en:"A quiz video channel for people aged 60 and over in English-speaking countries, published on YouTube with country series rolling out in sequence. The series has also started on Instagram Reels."},
+     more:{ja:"globe Entertainment が企画・運営するクイズ動画チャンネルです。米国向けシリーズから始め、国ごとのシリーズを順に広げています。", en:"A quiz video channel planned and operated by globe Entertainment. It began with a series for the United States and is expanding country by country."},
+     feats:[
+       {ja:"英語圏の60歳以上に向けたクイズ動画を、YouTube で配信している", en:"Quiz videos for viewers aged 60+ in English-speaking countries, published on YouTube"},
+       {ja:"国別シリーズの公開：米国に続き、カナダ・英国・オーストラリア向けのシリーズを順次公開（2026年11月）", en:"Country series rolling out: after the United States, series for Canada, the United Kingdom, and Australia follow in sequence (November 2026)"},
+       {ja:"Instagram の Reels でも同じシリーズを配信している", en:"The same series is also published as Instagram Reels"}
+     ],
+     steps:[
+       {ja:"YouTube で「60+ Quiz Club」を開いて動画を見る", en:"Open 60+ Quiz Club on YouTube and watch"},
+       {ja:"チャンネル登録をすると、新しい動画が届く", en:"Subscribe to the channel to receive new videos"}
+     ],
+     who:{ja:"英語圏の60歳以上の方と、そのご家族。頭の体操としてクイズ動画を楽しみたい方。", en:"Viewers aged 60+ in English-speaking countries and their families, and anyone who enjoys quiz videos as a daily brain exercise."},
+     warn:{ja:"視聴は無料です（YouTube）。公開の順番や頻度は、制作の進み具合で変わることがあります。", en:"Viewing is free on YouTube. The order and pace of releases may change with production."},
+     url:"https://www.youtube.com/channel/UCykBtOnagc9q1Xl7VPFrLDA", urlLabel:{ja:"YouTube チャンネルへ", en:"Visit the YouTube channel"}},
+    {slug:"everyday", cat:"publishing", dev:true,
+     name:{ja:"Everyday Abroad", en:"Everyday Abroad"}, badge:{ja:"準備中", en:"In preparation"},
+     lead:{ja:"海外の暮らしと旅の小さなガイドを、電子書籍として届ける準備中のレーベルです。最初の波として旅のガイド5本の原稿が完成し、出品に向けた準備が整っています。", en:"A label preparing small guides to living and traveling abroad as ebooks. The first wave — five travel guides — is complete in manuscript, and preparations for listing are in place."},
+     more:{ja:"globe Entertainment が企画する電子書籍レーベルです。大きなガイドブックではなく、テーマを絞った小さなガイドを、英語で海外の読者に届ける形を取ります。", en:"An ebook label planned by globe Entertainment. Rather than large guidebooks, it publishes small, tightly themed guides in English for readers overseas."},
+     feats:[
+       {ja:"テーマを絞った小さなガイド（マイクロガイド）を電子書籍で届ける形式", en:"Small, tightly themed micro-guides published as ebooks"},
+       {ja:"最初の波は旅のガイド5本で、原稿は完成済み", en:"The first wave is five travel guides, complete in manuscript"},
+       {ja:"英語で書き、海外の読者に届ける", en:"Written in English for readers overseas"}
+     ],
+     steps:null,
+     who:{ja:"海外旅行や、海外での暮らしを控えた方。", en:"People about to travel abroad or live abroad."},
+     warn:{ja:"現在は出品開始の判断待ちで、まだ販売していません。タイトル・価格・発売時期などの詳細は未定です。", en:"Listing has not started yet — the guides are not on sale. Titles, prices, and release timing are yet to be determined."},
+     url:null}
+  ];
+
+  function bi(attrs, jaText){
+    return ' data-ja="' + attrs.ja + '" data-en="' + attrs.en + '">' + jaText;
+  }
+
+  /* ---------- build dropdown (製品・メディア) ---------- */
+  var dd = document.getElementById('products-dd');
+  var menu = document.getElementById('products-menu');
+  (function buildMenu(){
+    var h = '<a class="dd-top" href="#products" data-view-link="products"' + bi({ja:"製品・メディアトップ", en:"Products &amp; Media — Top"}, "製品・メディアトップ") + '</a>';
+    var lastCat = null;
+    PRODUCTS.forEach(function(p){
+      if (p.cat !== lastCat) {
+        lastCat = p.cat;
+        h += '<div class="dd-cat"' + bi(CATS[p.cat], CATS[p.cat].ja) + '</div>';
+      }
+      if (p.name.ja === p.name.en) {
+        h += '<a href="#product-' + p.slug + '" data-view-link="product-' + p.slug + '">' + p.name.ja + '</a>';
+      } else {
+        h += '<a href="#product-' + p.slug + '" data-view-link="product-' + p.slug + '"' + bi(p.name, p.name.ja) + '</a>';
+      }
+    });
+    menu.innerHTML = h;
+  })();
+
+  /* ---------- build product detail views (visuals cloned from the list) ---------- */
+  (function buildDetails(){
+    var arts = document.querySelectorAll('#products article.feat');
+    var footer = document.querySelector('footer');
+    PRODUCTS.forEach(function(p, i){
+      var art = arts[i];
+      if (art) { art.setAttribute('data-product', p.slug); }
+      var visualHtml = '';
+      if (art) {
+        var fv = art.querySelector('.feat-visual');
+        if (fv) { visualHtml = fv.outerHTML; }
+      }
+      var nameAttr = (p.name.ja === p.name.en) ? '>' + p.name.ja : bi(p.name, p.name.ja);
+      var btnHtml = p.url
+        ? '<a class="btn grad ext-btn" href="' + p.url + '" target="_blank" rel="noopener"' + bi(p.urlLabel, p.urlLabel.ja) + '</a>'
+        : '';
+      var noteHtml = p.note
+        ? '<p class="feat-cap" style="margin-top:18px"' + bi(p.note, p.note.ja) + '</p>'
+        : (p.url ? ''
+        : '<p class="feat-cap" style="margin-top:18px"' + bi(NOURL_NOTE, NOURL_NOTE.ja) + '</p>');
+      var secHtml = '';
+      if (p.feats && p.feats.length) {
+        secHtml += '<div class="dsec"><h3' + bi({ja:"特徴・できること", en:"Features"}, "特徴・できること") + '</h3><ul class="featlist">'
+          + p.feats.map(function(f){ return '<li><span class="checksq"></span><span' + bi(f, f.ja) + '</span></li>'; }).join('')
+          + '</ul></div>';
+      }
+      if (p.steps && p.steps.length) {
+        secHtml += '<div class="dsec"><h3' + bi({ja:"使い方・始め方", en:"How it works"}, "使い方・始め方") + '</h3><ol class="steplist">'
+          + p.steps.map(function(s){ return '<li' + bi(s, s.ja) + '</li>'; }).join('')
+          + '</ol></div>';
+      }
+      if (p.who) {
+        secHtml += '<div class="dsec"><h3' + bi({ja:"こんな方に", en:"Who it is for"}, "こんな方に") + '</h3><p' + bi(p.who, p.who.ja) + '</p></div>';
+      }
+      if (p.warn) {
+        secHtml += '<div class="dsec warn"><h3' + bi({ja:"注意点・条件", en:"Notes &amp; conditions"}, "注意点・条件") + '</h3><p' + bi(p.warn, p.warn.ja) + '</p></div>';
+      }
+      if (secHtml) { secHtml = '<div class="dsecs">' + secHtml + '</div>'; }
+      var h =
+        '<section data-view-panel="product-' + p.slug + '" hidden><div class="wrap">'
+        + '<a class="backlink" href="#products" data-view-link="products"' + bi({ja:"← 製品・メディア一覧へ戻る", en:"← Back to Products &amp; Media"}, "← 製品・メディア一覧へ戻る") + '</a>'
+        + '<div class="sechead" style="margin-top:20px">'
+        +   '<div class="kicker"' + bi(CATS[p.cat], CATS[p.cat].ja) + '</div>'
+        +   '<h2><span' + nameAttr + '</span> <span class="' + (p.dev ? 'badge dev' : 'badge') + '"' + bi(p.badge, p.badge.ja) + '</span></h2>'
+        +   '<div class="secsub"' + bi(p.lead, p.lead.ja) + '</div>'
+        + '</div>'
+        + '<div class="detail-grid"><div>' + visualHtml + '</div>'
+        + '<div class="detail-body">'
+        +   '<p' + bi(p.more, p.more.ja) + '</p>'
+        +   '<dl class="company mini">'
+        +     '<dt' + bi({ja:"カテゴリ", en:"Category"}, "カテゴリ") + '</dt><dd' + bi(CATS[p.cat], CATS[p.cat].ja) + '</dd>'
+        +     '<dt' + bi({ja:"状態", en:"Status"}, "状態") + '</dt><dd' + bi(p.badge, p.badge.ja) + '</dd>'
+        +     '<dt' + bi({ja:"運営", en:"Operated by"}, "運営") + '</dt><dd>globe Entertainment</dd>'
+        +   '</dl>'
+        +   btnHtml + noteHtml
+        + '</div></div>'
+        + secHtml
+        + '</div></section>';
+      var tpl = document.createElement('template');
+      tpl.innerHTML = h;
+      footer.parentNode.insertBefore(tpl.content.firstElementChild, footer);
+    });
+  })();
+
+  /* ---------- language ---------- */
+  var lang = params.get('lang') === 'en' ? 'en' : 'ja';
+  function applyLang(l){
+    lang = l;
+    document.querySelectorAll('[data-ja]').forEach(function(el){
+      var v = el.getAttribute('data-' + l);
+      if (v !== null) { el.innerHTML = v; }
+    });
+    document.querySelectorAll('[data-ja-ph]').forEach(function(el){
+      var ph = el.getAttribute('data-' + l + '-ph');
+      if (ph !== null) { el.setAttribute('placeholder', ph); }
+    });
+    document.documentElement.setAttribute('lang', l);
+    document.title = document.querySelector('title').getAttribute('data-' + l);
+    document.querySelectorAll('.lang-toggle button').forEach(function(b){
+      var on = b.getAttribute('data-set') === l;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  /* ---------- views (tabs) ---------- */
+  var VIEWS = [];
+  document.querySelectorAll('[data-view-panel]').forEach(function(p){ VIEWS.push(p.getAttribute('data-view-panel')); });
+  var view = 'home';
+  var nav = document.getElementById('mainnav');
+  var burger = document.getElementById('burger');
+  function closeNav(){
+    nav.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    dd.classList.remove('open');
+  }
+  function showView(name){
+    if (VIEWS.indexOf(name) < 0) { name = 'home'; }
+    view = name;
+    document.querySelectorAll('[data-view-panel]').forEach(function(p){
+      p.hidden = p.getAttribute('data-view-panel') !== name;
+    });
+    document.querySelectorAll('header [data-view-link]').forEach(function(a){
+      var v = a.getAttribute('data-view-link');
+      a.classList.toggle('active', v === name || (name.indexOf('product-') === 0 && v === 'products'));
+    });
+    closeNav();
+    window.scrollTo(0, 0);
+  }
+
+  /* navigation: event delegation so generated links work too */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest ? e.target.closest('[data-view-link]') : null;
+    if (t) {
+      e.preventDefault();
+      var name = t.getAttribute('data-view-link');
+      showView(name);
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set('view', name);
+        u.hash = name === 'home' ? '' : name;
+        history.replaceState(null, '', u);
+      } catch (err) { /* file:// 等では URL 更新をスキップ */ }
+      return;
+    }
+    if (!e.target.closest || !e.target.closest('#products-dd')) { dd.classList.remove('open'); }
+  });
+
+  /* dropdown parent: on touch / small screens, first tap opens the menu */
+  var ddParent = dd.querySelector('.dd-parent');
+  ddParent.addEventListener('click', function(e){
+    var coarse = (window.matchMedia && window.matchMedia('(hover: none)').matches) || window.innerWidth <= 900;
+    if (coarse && !dd.classList.contains('open')) {
+      e.preventDefault();
+      e.stopPropagation();
+      dd.classList.add('open');
+    }
+  });
+
+  /* hamburger */
+  burger.addEventListener('click', function(){
+    var open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!open) { dd.classList.remove('open'); }
+  });
+
+  /* ---------- language toggle ---------- */
+  document.querySelectorAll('.lang-toggle button').forEach(function(b){
+    b.addEventListener('click', function(){
+      applyLang(b.getAttribute('data-set'));
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set('lang', lang);
+        history.replaceState(null, '', u);
+      } catch (err) { /* file:// 等では URL 更新をスキップ */ }
+    });
+  });
+
+  /* ---------- contact form (not connected yet): show the note ---------- */
+  var cfSend = document.getElementById('cf-send');
+  if (cfSend) {
+    cfSend.addEventListener('click', function(){
+      var note = document.getElementById('cf-note');
+      if (note) {
+        note.scrollIntoView({behavior:'smooth', block:'center'});
+        note.style.color = '#c2261f';
+        note.style.fontWeight = '700';
+        setTimeout(function(){ note.style.color = ''; note.style.fontWeight = ''; }, 4000);
+      }
+    });
+  }
+
+  /* ---------- init ---------- */
+  var initView = params.get('view') || (location.hash || '').replace('#', '') || 'home';
+  applyLang(lang);
+  showView(initView);
+  if (params.get('menu') === 'open') { dd.classList.add('open'); }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,13 @@
+{
+  "name": "globe Entertainment",
+  "short_name": "globe Ent.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#221240",
+  "icons": [
+    { "src": "assets/icon-installed.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
